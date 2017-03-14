@@ -176,7 +176,7 @@ static uint8 PAMonitorProfileChar3Props =  GATT_PROP_WRITE;
 static uint8 PAMonitorProfileChar3 = 0;
 
 // PAMonitor Profile Characteristic 3 User Description
-static uint8 PAMonitorProfileChar3UserDesp[17] = "Get Gas Monitor ";
+static uint8 PAMonitorProfileChar3UserDesp[17] = "Start Gas Calibr";
 
 
 // PAMonitor Profile Characteristic 4 Properties
@@ -193,7 +193,7 @@ static gattCharCfg_t *PAMonitorProfileChar4Config;
 
 										
 // PAMonitor Profile Characteristic 4 User Description
-static uint8 PAMonitorProfileChar4UserDesp[17] = "Start Gas Calibr";
+static uint8 PAMonitorProfileChar4UserDesp[17] = "Cali Res Notify ";
 
 
 // PAMonitor Profile Characteristic 5 Properties

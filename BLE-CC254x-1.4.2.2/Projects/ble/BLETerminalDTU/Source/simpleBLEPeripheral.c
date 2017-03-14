@@ -829,11 +829,9 @@ static void PAMonitorProfileChangeCB( uint8 paramID )
 		case PAMONITORPROFILE_CHAR1:
 			PAMonitorProfile_GetParameter( PAMONITORPROFILE_CHAR1, &newValue );
 			break;
+		
 		case PAMONITORPROFILE_CHAR3:
 			PAMonitorProfile_GetParameter( PAMONITORPROFILE_CHAR3, &newValue );
-			break;
-		case PAMONITORPROFILE_CHAR4:
-			PAMonitorProfile_GetParameter( PAMONITORPROFILE_CHAR4, &newValue );
 			if(0x01 == newValue)
 			{
 				HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_FLASH );
@@ -845,6 +843,9 @@ static void PAMonitorProfileChangeCB( uint8 paramID )
 				osal_stop_timerEx( simpleBLEPeripheral_TaskID, SBP_GAS_SENSOR_CALI_TMP_EVT);
 			}
 			break;
+		case PAMONITORPROFILE_CHAR4:
+					PAMonitorProfile_GetParameter( PAMONITORPROFILE_CHAR4, &newValue );
+					break;
 
 		case PAMONITORPROFILE_CHAR5:
 			PAMonitorProfile_GetParameter( PAMONITORPROFILE_CHAR5, &newValue );
