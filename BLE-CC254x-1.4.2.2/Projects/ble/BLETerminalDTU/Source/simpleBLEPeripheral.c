@@ -58,6 +58,8 @@
 #include "hal_adc.h"
 #include "hal_led.h"
 #include "hal_key.h"
+#include "hal_sensor.h"
+
 
 #include "gatt.h"
 
@@ -84,6 +86,7 @@
   #include "oad.h"
   #include "oad_target.h"
 #endif
+
 
 /*********************************************************************
  * MACROS
@@ -429,6 +432,8 @@ HalLedInit();
  HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_ON );
  HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_OFF );
 
+	HalSensorInit();
+	HalSensorEnable(HAL_SENSOR_POWER_ON);
 
 #if defined( CC2540_MINIDK )
 

@@ -136,6 +136,13 @@ extern "C"
 #define POWER_24V_DDR                     P0DIR
 #define POWER_24V_POLARITY                ACTIVE_HIGH
 
+#define HAL_TURN_OFF_POWER_5V()       st( POWER_5V_SBIT = POWER_5V_POLARITY (0); )
+#define HAL_TURN_OFF_POWER_24V()       st( POWER_24V_SBIT = POWER_24V_POLARITY (0); )
+
+#define HAL_TURN_ON_POWER_5V()        st( POWER_5V_SBIT = POWER_5V_POLARITY (1); )
+#define HAL_TURN_ON_POWER_24V()        st( POWER_24V_SBIT = POWER_24V_POLARITY (1); )
+
+
 
 #define DISP_INT_BV                      BV(5)
 #define DISP_INT_SBIT                    P0_5
