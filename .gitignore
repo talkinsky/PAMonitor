@@ -46,22 +46,13 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.d51
-BLE-CC254x-1.4.2.2/Projects/ble/BLETerminalDTU/CC2541DB/CC2541DK-MINI Keyfob/Exe/SimpleBLEPeripheral.d51
-*.d51
 *.hex
-BLE-CC254x-1.4.2.2/Projects/ble/BLETerminalDTU/CC2541DB/CC2541DK-MINI Keyfob/Exe/SimpleBLEPeripheral.d51
 *.dep
 *.pbi
 *.r51
 *.browse
 *.cout
-*.dep
-*.cout
 *.map
-BLE-CC254x-1.4.2.2/Projects/ble/BLETerminalDTU/CC2541DB/SimpleBLEPeripheral.dep
 *.wsdt
-*.d51
-*.map
-*.dep
-*.dep
-*.wsdt
+*.dni
+*.dbgdt
