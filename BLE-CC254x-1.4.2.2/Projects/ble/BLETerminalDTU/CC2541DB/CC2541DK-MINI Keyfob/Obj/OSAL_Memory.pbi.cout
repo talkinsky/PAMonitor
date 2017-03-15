@@ -1,98 +1,98 @@
-"C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\osal\common\OSAL_Memory.c"
+"D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\osal\common\OSAL_Memory.c"
 -std=c99
 -ferror-limit=100
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\hal\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\hal\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\hal\target\CC2540EB
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\hal\target\CC2540EB
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\osal\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\osal\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\services\saddr
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\services\saddr
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\controller\CC254x\phy
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\controller\CC254x\phy
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\controller\CC254x\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\controller\CC254x\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\hci
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\hci
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\host
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\host
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\ROM
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\..\..\Components\ble\ROM
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common\cc2540
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common\cc2540
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common\npi\npi_np
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\common\npi\npi_np
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Roles\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Roles\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Roles
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Roles
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\SimpleProfile\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\SimpleProfile\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\SimpleProfile
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\SimpleProfile
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\DevInfo
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\DevInfo
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Keys\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Keys\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Keys
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\Keys
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\PAMonitorProfile
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\BLETerminalDTU\CC2541DB\..\..\Profiles\PAMonitorProfile
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\8051\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\8051\inc\clib
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\common
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\common
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\hal\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\hal\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\hal\target\CC2540EB
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\hal\target\CC2540EB
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\osal\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\osal\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\services\saddr
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\services\saddr
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\controller\CC254x\phy
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\controller\CC254x\phy
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\controller\CC254x\include
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\controller\CC254x\include
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\hci
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\hci
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\host
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\host
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Components\ble\ROM
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Components\ble\ROM
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\common\cc2540
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\common\cc2540
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\common\npi\npi_np
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\common\npi\npi_np
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Roles\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Roles\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Roles
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Roles
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\SimpleProfile\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\SimpleProfile\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\SimpleProfile
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\SimpleProfile
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\DevInfo
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\DevInfo
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Keys\CC254x
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Keys\CC254x
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Keys
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\Keys
 -I
-C:\Texas Instruments\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\PAMonitorProfile
+D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\PAMonitorProfile
 -DINT_HEAP_LEN=3072
 -DHALNODEBUG=1
 -DOSAL_CBTIMER_NUM_TASKS=1
