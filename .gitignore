@@ -56,3 +56,5 @@ Temporary Items
 *.wsdt
 *.dni
 *.dbgdt
+*.xcl
+*.cspy.bat
