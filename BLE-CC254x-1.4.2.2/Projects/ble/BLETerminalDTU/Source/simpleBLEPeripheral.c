@@ -59,7 +59,7 @@
 #include "hal_led.h"
 #include "hal_key.h"
 #include "hal_sensor.h"
-
+#include "hal_dig.h"
 
 #include "gatt.h"
 
@@ -151,7 +151,7 @@
  * LOCAL VARIABLES
  */
 static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
-#define BLE_DEVICE_NAME 0x20,0x01,0x30,0x30,0x31
+#define BLE_DEVICE_NAME 0x20,0x01,0x30,0x30,0x37
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 
@@ -330,7 +330,7 @@ static void SimpleBLE_Updata_Adverting_Battery_Data(uint8 type, uint8 value)
 void SimpleBLEPeripheral_Init( uint8 task_id )
 {
 
-
+	uint8 temp = 0x0A;
 #ifdef LSQ_ADD
 	HCI_EXT_ExtendRfRangeCmd();
 	HCI_EXT_SetTxPowerCmd(HCI_EXT_TX_POWER_4_DBM);
@@ -428,12 +428,16 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
 
 	// makes sure LEDs are off
-HalLedInit();
- HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_ON );
- HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_OFF );
+ //HalLedInit();
+ HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_OFF );
+ HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON );
 
 	HalSensorInit();
 	HalSensorEnable(HAL_SENSOR_POWER_ON);
+
+	HalDigInit();
+	HalDigShow(&temp,1);
+	
 
 #if defined( CC2540_MINIDK )
 

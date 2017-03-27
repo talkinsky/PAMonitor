@@ -123,7 +123,7 @@ extern "C"
 #define ALARM_LED_POLARITY                LED2_POLARITY 
 
 
-/////////////////////////////////////////////////////Other Pin define/////////
+//////////////////////   Pin define for Gas Sensor    //////////////////////////
 
 #define POWER_5V_BV                      BV(2)
 #define POWER_5V_SBIT                    P0_2
@@ -143,6 +143,7 @@ extern "C"
 #define HAL_TURN_ON_POWER_24V()        st( POWER_24V_SBIT = POWER_24V_POLARITY (1); )
 
 
+/////////////////////////   Pin define for digboard display   ////////////////////////////////
 
 #define DISP_INT_BV                      BV(5)
 #define DISP_INT_SBIT                    P0_5
@@ -159,13 +160,50 @@ extern "C"
 #define DISP_RSTI_DDR                     P0DIR
 #define DISP_RSTI_POLARITY                ACTIVE_HIGH
 
+#define HAL_SET_DIG_INT_LOW()       st( DISP_INT_SBIT = DISP_INT_POLARITY (0); )
+#define HAL_SET_DIG_RST_LOW()       st( DISP_RST_SBIT = DISP_RST_POLARITY (0); )
+#define HAL_SET_DIG_RSTI_LOW()       st( DISP_RSTI_SBIT = DISP_RSTI_POLARITY (0); )
+
+
+#define HAL_SET_DIG_INT_HIGH()        st( DISP_INT_SBIT = DISP_INT_POLARITY (1); )
+#define HAL_SET_DIG_RST_HIGH()        st( DISP_RST_SBIT = DISP_RST_POLARITY (1); )
+#define HAL_SET_DIG_RSTI_HIGH()        st( DISP_RSTI_SBIT = DISP_RSTI_POLARITY (1); )
+
+
+/////////////////////////   Pin define for Beep Alarm control   ////////////////////////////////
+
 #define BEEP_ALARM_BV                      BV(5)
 #define BEEP_ALARM_SBIT                    P1_5
 #define BEEP_ALARM_DDR                     P1DIR
 #define BEEP_ALARM_POLARITY                ACTIVE_HIGH
 
 
+
+//////////////////////   Pin define for CH452 I2C Bus    //////////////////////////
+#define CH452_SDA_PORT					  P2
+#define CH452_SDA_BV                      BV(1)
+#define CH452_SDA_SBIT                    P2_1
+#define CH452_SDA_DDR                     P2DIR
+#define CH452_SDA_SEL					  P2SEL
+#define CH452_SDA_POLARITY                ACTIVE_HIGH
+
+
+#define CH452_SCL_PORT					  P2
+#define CH452_SCL_BV                      BV(2)
+#define CH452_SCL_SBIT                    P2_2
+#define CH452_SCL_DDR                     P2DIR
+#define CH452_SCL_SEL					  P2SEL
+#define CH452_SCL_POLARITY                ACTIVE_HIGH
+
+#define HAL_SET_SDA_LOW()       st( CH452_SDA_SBIT = CH452_SDA_POLARITY (0); )
+#define HAL_SET_SCL_LOW()       st( CH452_SCL_SBIT = CH452_SCL_POLARITY (0); )
+
+#define HAL_SET_SDA_HIGH()        st( CH452_SDA_SBIT = CH452_SDA_POLARITY (1); )
+#define HAL_SET_SCL_HIGH()        st( CH452_SCL_SBIT = CH452_SCL_POLARITY (1); )
+
+
 //////////////////////Pin define end /////////////////////////////////////////
+
 
 /* Push Button Configuration */
 
