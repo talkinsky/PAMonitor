@@ -57,10 +57,41 @@
 #include "osal.h"
 #include "hal_board.h"
 #include "hal_ch452.h"  
+#include "hal_i2c.h"
 
 /***************************************************************************************************
  *                                              TYPEDEFS
  ***************************************************************************************************/
+//----------------------------------------------------------------------------- 
+// Includes  
+//----------------------------------------------------------------------------- 
+
+/* ------------------------------------------------------------------------------------------------  *
+Constants	
+* ------------------------------------------------------------------------------------------------	*/	
+// I2CWC  
+#define I2C_OVR			 BV(7) // 1: GPIO functionality.0: I2C functionality 
+#define I2C_SCLPUE 		BV(3) //SCL pin pullup enable 
+#define I2C_SDAPUE		 BV(2) //SDA pin pullup enable. 
+#define I2C_SCLOE		   BV(1) //SCL pin output enable 
+
+
+#define I2C_SDAOE			BV(0) //SDA pin output enable	// I2CIO  
+#define I2C_SCLD			   BV(1) //SCL data value 
+#define I2C_SDAD			   BV(0) //SDA data value	
+
+
+#define SDA_0	   I2CIO &= ~I2C_SDAD //SDA=0 
+#define SDA_1 	 I2CIO |= I2C_SDAD	//SDA=1 
+#define SCL_0	   I2CIO &= ~I2C_SCLD //SCL=0 
+#define SCL_1 	 I2CIO |= I2C_SCLD	//SCL=1   
+#define SDA_IN	  I2CWC &= ~I2C_SDAOE //SDA INPUT 
+#define SDA_OUT	  I2CWC |= I2C_SDAOE  //SDA OUTPUT 
+#define SCL_IN	   I2CWC &= ~I2C_SCLOE //SCL INPUT 
+#define SCL_OUT	   I2CWC |= I2C_SCLOE  //SCL OUTPUT   
+
+
+#define I2C_GPIO	I2CWC = 0x80; //1: I2C GPIO
 
 
 /***************************************************************************************************
@@ -83,139 +114,123 @@ static void  UDelay(uint16 microSecs)
   while(microSecs--)  
   {  
     /* 32 NOPs == 1 usecs */  
+	/*
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
-    asm("nop"); asm("nop");  
+    asm("nop"); asm("nop");  */
+    asm("nop"); asm("nop"); 
+
   }  
 }  
 
-
-static void CH452_SET_SDA_IN()
+static void CH452_I2C_NACK()
 {
-	CH452_SDA_SEL &= ~(CH452_SDA_BV);	/* Set pin function to GPIO */
-	CH452_SDA_DDR &= ~(CH452_SDA_BV);	/* Set pin direction to Input */
+	SDA_OUT;
+	SDA_1;
+	UDelay(1);
+	SCL_1;
+	UDelay(1);
+	SCL_0;
 }
 
-static void CH452_SET_SDA_OUT()
+static void CH452_I2C_ACK()
 {
-	CH452_SDA_SEL &= ~(CH452_SDA_BV);	/* Set pin function to GPIO */
-	CH452_SDA_DDR |= (CH452_SDA_BV);	/* Set pin direction to output */
-}
-
-
-
-#define CH452_SDA_SET HAL_SET_SDA_HIGH()
-#define CH452_SDA_CLR HAL_SET_SDA_LOW()
-#define CH452_SDA_D_IN CH452_SET_SDA_IN()
-#define CH452_SDA_D_OUT CH452_SET_SDA_OUT()
-#define CH452_SDA_IN	(CH452_SDA_PORT & CH452_SDA_BV)
-
-#define CH452_SCL_SET HAL_SET_SCL_HIGH()
-#define CH452_SCL_CLR HAL_SET_SCL_LOW()
-
-
-
-
-#define DELAY_1US UDelay(1)
-static void CH452_Start()
-{
-	CH452_SDA_SET;
-	CH452_SDA_D_IN;   
-	CH452_SCL_CLR;	
-	do {
-		DELAY_1US;  // ????????CH452????
-		DELAY_1US;
-	} while ( CH452_SDA_IN == 0 );  // CH452???????
-	DELAY_1US;
-	CH452_SDA_SET;   /*???????????*/
-	CH452_SDA_D_OUT;   /* ??SDA????? */
-	CH452_SCL_SET;
-	DELAY_1US;
-	CH452_SDA_CLR;   /*??????*/
-	DELAY_1US;      
-	CH452_SCL_CLR;   /*??I2C??,????????? */
-	DELAY_1US;
-
+	SDA_OUT;
+	SDA_0;
+	UDelay(1);
+	SCL_1;
+	UDelay(1);
+	SCL_0;
 }
 
 
-static void CH452_Stop()
+
+static void CH452_I2C_Start(void)
 {
-	CH452_SDA_CLR;
-	CH452_SDA_D_OUT;   /* ??SDA????? */
-	DELAY_1US;
-	CH452_SCL_SET;
-	DELAY_1US;
-	CH452_SDA_SET;  /*??I2C??????*/
-	DELAY_1US;
-	CH452_SDA_D_IN;   /* ??SDA????? */
+	SDA_OUT;
+	SCL_OUT;
+	SDA_1;
+	SCL_1;
+	UDelay(1);
+	SDA_0;
+	UDelay(1);
+	SCL_0;
+	UDelay(1);
 }
 
-static void CH452_WriteByte(uint8 dat)
+static void CH452_I2C_Stop(void)
+{
+	SDA_OUT;
+	SCL_0;
+	UDelay(1);
+	SCL_1;
+	UDelay(1);
+	SDA_1;
+	SDA_IN;
+	SCL_IN;
+}
+
+static bool check_ack(void)
+{
+	bool ack_flag;
+	SDA_IN;
+	UDelay(1);
+	SCL_1;
+	UDelay(1);
+	if((I2CIO & I2C_SDAD) == 1)
+	{ //if(SDA==1)
+		ack_flag=0;   //NACK  error
+	}
+	else
+	{
+		ack_flag = 1;   //ACK   OK
+	}
+	SCL_0;  //read 
+	return ack_flag;
+}
+
+
+
+static void CH452_I2C_WriteByte(uint8 dat)
 {
 	uint8 i;
 	uint8 data = dat;
-	CH452_SDA_D_OUT;   /* ??SDA????? */
-	for(i=0;i!=8;i++)  // ??8???
+	SDA_OUT;
+	for(i=0;i!=8;i++)  
 	{
-		if(data&0x80) {CH452_SDA_SET;}
-		else {CH452_SDA_CLR;}
-		DELAY_1US;
-		CH452_SCL_SET;
+		if(data&0x80) {SDA_1;}
+		else {SDA_0;}
+		UDelay(1);
+		SCL_1;
 		data<<=1;
-		DELAY_1US;
-		DELAY_1US;
-		CH452_SCL_CLR;
-		DELAY_1US;
+		UDelay(2);
+		SCL_0;
+		//UDelay(1);
 	}
-	CH452_SDA_D_IN;   /* ??SDA????? */
-	CH452_SDA_SET;
-	DELAY_1US;
-	CH452_SCL_SET;  // ????
-	DELAY_1US;
-	DELAY_1US;
-	CH452_SCL_CLR;
-	DELAY_1US;
+	SDA_IN;  
+	SDA_1; 
+	UDelay(1);
+	SCL_1;  // ????
+	UDelay(2);
+	SCL_0;
+	UDelay(1);
 
 }
 
-static uint8 CH452_ReadByte()
-{
-	unsigned char dat,i;
-	CH452_SDA_SET;
-	CH452_SDA_D_IN;   /* ??SDA????? */
-	dat=0;
-	for(i=0;i!=8;i++)  // ??8???
-	{
-		CH452_SCL_SET;
-		DELAY_1US;
-		DELAY_1US;
-		dat<<=1;
-		if(CH452_SDA_IN) dat++;  // ??1?
-		CH452_SCL_CLR;
-		DELAY_1US;
-//		DELAY_1US;
-	}
-	CH452_SDA_SET;
-	DELAY_1US;
-	CH452_SCL_SET;  // ??????
-	DELAY_1US;
-	DELAY_1US;
-	CH452_SCL_CLR;
-	DELAY_1US;
-	return(dat);
-}
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 void HalCH452Write( uint8 data)
 {
-	CH452_Start();			   /*????*/
-	CH452_WriteByte((unsigned char)(data>>7)&CH452_I2C_MASK|CH452_I2C_ADDR1);  // CH452?ADDR=1?(??)
-	CH452_WriteByte((unsigned char)data);	  /*????*/
-	CH452_Stop(); 				/*????*/ 
+	CH452_I2C_Start();			  
+	CH452_I2C_WriteByte((unsigned char)(data>>7)&CH452_I2C_MASK|CH452_I2C_ADDR1);  // CH452?ADDR=1?(??)
+	CH452_I2C_WriteByte((unsigned char)data);	 
+	CH452_I2C_Stop(); 
 
 }
 
@@ -225,7 +240,9 @@ uint8 HalCH452Read( )
 
 void HalCH452Init()
 {
-	HalCH452Write(CH452_SYSON2);	//?????,??SDA????????,???????CH452_SYSON2W(0x04,0x23)
+	//HalI2CInit(0xAA,i2cClock_33KHZ);
+	I2C_GPIO;
+	HalCH452Write(CH452_SYSON1);	//?????,??SDA????????,???????CH452_SYSON2W(0x04,0x23)
 	HalCH452Write(CH452_BCD);   // BCD??,8????
 	HalCH452Write(CH452_DIG7 | 1);
 	HalCH452Write(CH452_DIG6 | 2);

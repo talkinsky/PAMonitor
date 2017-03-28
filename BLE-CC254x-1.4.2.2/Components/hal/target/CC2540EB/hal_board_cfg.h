@@ -178,30 +178,6 @@ extern "C"
 #define BEEP_ALARM_POLARITY                ACTIVE_HIGH
 
 
-
-//////////////////////   Pin define for CH452 I2C Bus    //////////////////////////
-#define CH452_SDA_PORT					  P2
-#define CH452_SDA_BV                      BV(1)
-#define CH452_SDA_SBIT                    P2_1
-#define CH452_SDA_DDR                     P2DIR
-#define CH452_SDA_SEL					  P2SEL
-#define CH452_SDA_POLARITY                ACTIVE_HIGH
-
-
-#define CH452_SCL_PORT					  P2
-#define CH452_SCL_BV                      BV(2)
-#define CH452_SCL_SBIT                    P2_2
-#define CH452_SCL_DDR                     P2DIR
-#define CH452_SCL_SEL					  P2SEL
-#define CH452_SCL_POLARITY                ACTIVE_HIGH
-
-#define HAL_SET_SDA_LOW()       st( CH452_SDA_SBIT = CH452_SDA_POLARITY (0); )
-#define HAL_SET_SCL_LOW()       st( CH452_SCL_SBIT = CH452_SCL_POLARITY (0); )
-
-#define HAL_SET_SDA_HIGH()        st( CH452_SDA_SBIT = CH452_SDA_POLARITY (1); )
-#define HAL_SET_SCL_HIGH()        st( CH452_SCL_SBIT = CH452_SCL_POLARITY (1); )
-
-
 //////////////////////Pin define end /////////////////////////////////////////
 
 

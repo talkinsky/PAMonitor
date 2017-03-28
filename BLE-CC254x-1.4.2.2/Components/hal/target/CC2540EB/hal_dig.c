@@ -99,7 +99,14 @@ static uint8 HalDigPreState;
  ***************************************************************************************************/
 void HalDigInit (void)
 {
-	HAL_SET_DIG_INT_LOW();
+	// Set LED GPIOs to outputs.
+
+	DISP_INT_DDR |= DISP_INT_BV;
+	DISP_RST_DDR |= DISP_RST_BV;
+	DISP_RSTI_DDR |= DISP_RSTI_BV;
+	
+
+	HAL_SET_DIG_INT_HIGH();
 	HAL_SET_DIG_RST_LOW();
 	HAL_SET_DIG_RSTI_LOW();
 	HalDigState = DIG_DISP_OFF;
@@ -145,6 +152,7 @@ void HalDigShow( uint8 *data, uint8 len)
 {
 	uint8 buf = *data;
 	uint8 ret;
+	//HalCH452Write(buf);
 }
 
 
