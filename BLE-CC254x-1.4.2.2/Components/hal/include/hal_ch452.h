@@ -144,7 +144,7 @@ extern uint8 HalCH452Read( );
 /*
  * write one byte data to ch452
  */
-extern void HalCH452Write( uint8 data);
+extern void HalCH452Write( uint16 data);
 
 
 /*********************************************************************

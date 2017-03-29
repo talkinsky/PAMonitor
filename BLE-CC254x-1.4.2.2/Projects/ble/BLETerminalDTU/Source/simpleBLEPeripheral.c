@@ -480,7 +480,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 {
 
   VOID task_id; // OSAL required parameter that isn't used in this function
-
+  uint8 temp = 0;
   if ( events & SYS_EVENT_MSG )
   {
     uint8 *pMsg;
@@ -507,8 +507,16 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     // Set timer for first periodic event
     osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+	osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_TEST_EVT, 2000 );
 
     return ( events ^ SBP_START_DEVICE_EVT );
+  }
+
+  if(events & SBP_TEST_EVT)
+  {
+  	HalDigShow(&temp,1);
+  	osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_TEST_EVT, 3000 );
+  	return ( events ^ SBP_TEST_EVT);
   }
 
   if ( events & SBP_PERIODIC_EVT )

@@ -67,6 +67,8 @@ extern "C"
 #define SBP_START_DEVICE_EVT                              0x0001
 #define SBP_PERIODIC_EVT                                  0x0002
 #define SBP_GAS_SENSOR_CALI_TMP_EVT                       0x0004
+#define SBP_TEST_EVT                                  0x0008
+
 
 
 /*********************************************************************

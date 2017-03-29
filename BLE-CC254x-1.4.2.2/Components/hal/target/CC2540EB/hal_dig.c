@@ -107,7 +107,7 @@ void HalDigInit (void)
 	
 
 	HAL_SET_DIG_INT_HIGH();
-	HAL_SET_DIG_RST_LOW();
+	HAL_SET_DIG_RST_HIGH();
 	HAL_SET_DIG_RSTI_LOW();
 	HalDigState = DIG_DISP_OFF;
 	HalCH452Init();
@@ -152,7 +152,14 @@ void HalDigShow( uint8 *data, uint8 len)
 {
 	uint8 buf = *data;
 	uint8 ret;
-	//HalCH452Write(buf);
+	HalCH452Write(CH452_DIG7 | 1);
+	HalCH452Write(CH452_DIG6 | 2);
+	HalCH452Write(CH452_DIG5 | 3);
+	HalCH452Write(CH452_DIG4 | 4);
+	HalCH452Write(CH452_DIG3 | 5);
+	HalCH452Write(CH452_DIG2 | 6);
+	HalCH452Write(CH452_DIG1 | 7);
+	HalCH452Write(CH452_DIG0 | 8);  // ????8
 }
 
 

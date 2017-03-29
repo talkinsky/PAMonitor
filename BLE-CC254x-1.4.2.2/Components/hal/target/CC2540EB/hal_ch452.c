@@ -114,15 +114,15 @@ static void  UDelay(uint16 microSecs)
   while(microSecs--)  
   {  
     /* 32 NOPs == 1 usecs */  
-	/*
+	
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
-    asm("nop"); asm("nop");  */
-    asm("nop"); asm("nop"); 
+    asm("nop"); asm("nop");  
+
 
   }  
 }  
@@ -165,11 +165,12 @@ static void CH452_I2C_Start(void)
 static void CH452_I2C_Stop(void)
 {
 	SDA_OUT;
-	SCL_0;
+	SDA_0;
 	UDelay(1);
 	SCL_1;
 	UDelay(1);
 	SDA_1;
+	UDelay(1);
 	SDA_IN;
 	SCL_IN;
 }
@@ -209,7 +210,7 @@ static void CH452_I2C_WriteByte(uint8 dat)
 		data<<=1;
 		UDelay(2);
 		SCL_0;
-		//UDelay(1);
+		UDelay(1);
 	}
 	SDA_IN;  
 	SDA_1; 
@@ -225,13 +226,13 @@ static void CH452_I2C_WriteByte(uint8 dat)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-void HalCH452Write( uint8 data)
+void HalCH452Write( uint16 data)
 {
 	CH452_I2C_Start();			  
 	CH452_I2C_WriteByte((unsigned char)(data>>7)&CH452_I2C_MASK|CH452_I2C_ADDR1);  // CH452?ADDR=1?(??)
 	CH452_I2C_WriteByte((unsigned char)data);	 
 	CH452_I2C_Stop(); 
-
+	UDelay(10);
 }
 
 uint8 HalCH452Read( )
@@ -244,14 +245,7 @@ void HalCH452Init()
 	I2C_GPIO;
 	HalCH452Write(CH452_SYSON1);	//?????,??SDA????????,???????CH452_SYSON2W(0x04,0x23)
 	HalCH452Write(CH452_BCD);   // BCD??,8????
-	HalCH452Write(CH452_DIG7 | 1);
-	HalCH452Write(CH452_DIG6 | 2);
-	HalCH452Write(CH452_DIG5 | 3);
-	HalCH452Write(CH452_DIG4 | 4);
-	HalCH452Write(CH452_DIG3 | 5);
-	HalCH452Write(CH452_DIG2 | 6);
-	HalCH452Write(CH452_DIG1 | 7);
-	HalCH452Write(CH452_DIG0 | 8);  // ????8
+
 }
 
 
