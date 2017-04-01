@@ -94,8 +94,8 @@ void HalSensorInit (void)
 {
 
   // Set LED GPIOs to outputs.
-  //POWER_5V_DDR |= POWER_5V_BV;
-  //POWER_24V_DDR |= POWER_24V_BV;
+  POWER_5V_DDR |= POWER_5V_BV;
+  POWER_24V_DDR |= POWER_24V_BV;
   HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_OFF);  // Initialize all LEDs to OFF.
 
 }
