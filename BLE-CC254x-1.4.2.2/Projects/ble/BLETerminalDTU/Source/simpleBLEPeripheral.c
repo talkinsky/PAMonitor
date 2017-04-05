@@ -228,6 +228,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState );
 //static void performPeriodicTask( void );
 //static void simpleProfileChangeCB( uint8 paramID );
 static void PAMonitorProfileChangeCB( uint8 paramID );
+static void GASSensorValueMonitorCB( uint16 paramID );
 
 
 
@@ -269,6 +270,12 @@ static PAMonitorProfileCBs_t PAMonitorPeripheral_PAMonitorProfileCBs =
   PAMonitorProfileChangeCB    // Charactersitic value change callback
 };
 
+
+
+static GASSenorValueMonitorCBs_t GAS_Sensor_Value_MonitorCBSs=
+{
+	GASSensorValueMonitorCB    // call back function in monitor gas value
+};
 /*********************************************************************
  * PUBLIC FUNCTIONS
  */
@@ -432,11 +439,12 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
  HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_OFF );
  HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON );
 
-	//HalSensorInit();
-	//HalSensorEnable(HAL_SENSOR_POWER_ON);
+	HalSensorInit();
+	HalSensorEnable(HAL_SENSOR_POWER_ON);
+	HalGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
 
 	HalDigInit();
-	HalDigShow(&temp,1);
+	HalDigShow(0);
 
 
 
@@ -507,17 +515,10 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     // Set timer for first periodic event
     osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
-	osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_TEST_EVT, 2000 );
 
     return ( events ^ SBP_START_DEVICE_EVT );
   }
 
-  if(events & SBP_TEST_EVT)
-  {
-  	HalDigShow(&temp,1);
-  	osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_TEST_EVT, 3000 );
-  	return ( events ^ SBP_TEST_EVT);
-  }
 
   if ( events & SBP_PERIODIC_EVT )
   {
@@ -846,4 +847,24 @@ static void PAMonitorProfileChangeCB( uint8 paramID )
 	}
 
 }
+
+
+static void GASSensorValueMonitorCB( uint16 paramID )
+{
+	if(paramID > 9999)
+	{
+		paramID = 9999;
+	}
+	HalDigShow(paramID);
+	if(paramID > 1000)
+	{
+		HalDigShowAlarm(1);
+	}
+	else
+	{
+		HalDigShowAlarm(0);
+	}
+	return;
+}
+
 
