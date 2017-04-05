@@ -71,6 +71,10 @@
 #define SENSOR_STATUS_RUNING		0X02
 
 
+#define GAS_SENSOR_INIT_TIME_VALID	180000   //3180s = 3min
+#define GAS_SENSOR_READ_VALUE_VALID	500      //500ms
+
+
 /***************************************************************************************************
  *                                           GLOBAL VARIABLES
  ***************************************************************************************************/
@@ -114,8 +118,16 @@ void HalSensorInit (void)
 
 void HalSensorEnable( uint8 enable )
 {
-	HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_ON);  // Initialize all sensor power on
-	osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, 500);   /* Schedule event */
+	if(enable)
+	{
+		HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_ON);  // Initialize all sensor power on
+		osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, GAS_SENSOR_INIT_TIME_VALID);   /* first time need a long time to init sensor*/
+	}
+	else
+	{
+		HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_OFF);  // Initialize all sensor power on
+		osal_stop_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT);   /* Schedule event */
+	}
 }
 
 
@@ -201,7 +213,7 @@ void HalGasSensorUpdate( void )
 	   }
 	 
 
-	osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, 500);
+	osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, GAS_SENSOR_READ_VALUE_VALID);
 }
 
 
