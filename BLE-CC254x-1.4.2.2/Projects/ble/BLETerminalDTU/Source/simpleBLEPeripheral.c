@@ -87,7 +87,7 @@
   #include "oad_target.h"
 #endif
 
-
+#include "params.h"
 /*********************************************************************
  * MACROS
  */
@@ -438,6 +438,9 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
  //HalLedInit();
  HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_OFF );
  HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON );
+
+
+	gasParamInit();
 
 	HalSensorInit();
 	HalSensorEnable(HAL_SENSOR_POWER_ON);
