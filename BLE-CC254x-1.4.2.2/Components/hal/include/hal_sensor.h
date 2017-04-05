@@ -57,6 +57,7 @@ extern "C"
  * INCLUDES
  */
 #include "hal_board.h"
+#include "bcomdef.h"
 
 /*********************************************************************
  * MACROS
@@ -108,6 +109,20 @@ extern uint8 HalSensorCalibration( void );
  * Get current sensor status.
  */
 extern uint8 HalSensorGetState ();
+
+extern void HalGasSensorUpdate( void );
+
+
+/******************************call back function while gas sensor start**********************************/
+typedef void (*GASSensorValueMonitor_t)( uint16 paramID );
+
+typedef struct
+{
+  GASSensorValueMonitor_t        pfnGASSensorValueMonitor; 
+} GASSenorValueMonitorCBs_t;
+
+
+extern bStatus_t HalGasSensorRegisterCallback(GASSenorValueMonitorCBs_t *appCallbacks );
 /*********************************************************************
 *********************************************************************/
 

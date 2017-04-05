@@ -90,7 +90,7 @@ extern uint8 HalDigFlash( uint8 enable );
 /*
  * Set Dig Board show number.
  */
-extern void HalDigShow( uint8 *data , uint8 len);
+extern void HalDigShow( uint16 show_value);
 
 /*
  * Put Dig Board in sleep state - store current values and close display
@@ -106,6 +106,13 @@ extern void HalDigExitSleep( void );
  * Return Dig Board state
  */
 extern uint8 HalDigGetState ( void );
+
+
+/*
+ * start Alarm show
+ */
+extern uint8 HalDigShowAlarm  ( uint8 enable ) ;
+
 
 /*********************************************************************
 *********************************************************************/

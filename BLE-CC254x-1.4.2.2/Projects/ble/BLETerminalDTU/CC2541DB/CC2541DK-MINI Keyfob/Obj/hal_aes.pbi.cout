@@ -103,6 +103,8 @@ D:\GitHub\TI_PAMonitor\BLE-CC254x-1.4.2.2\Projects\ble\Profiles\PAMonitorProfile
 -DHAL_LED=TRUE
 -DLSQ_ADD=TRUE
 -DBLINK_LEDS=1
+-DGAS_SENSOR=1
+-DHAL_ADC=TRUE
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

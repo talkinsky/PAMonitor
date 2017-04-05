@@ -67,6 +67,9 @@
 #include "hal_timer.h"
 #include "hal_types.h"
 #include "hal_uart.h"
+#if defined GAS_SENSOR
+#include "hal_sensor.h"
+#endif
 #ifdef CC2591_COMPRESSION_WORKAROUND
 #include "mac_rx.h"
 #endif
@@ -224,6 +227,15 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
 #endif /* BLINK_LEDS && HAL_LED */
     return events ^ HAL_LED_BLINK_EVENT;
   }
+
+  if ( events & HAL_GAS_SENSOR_READ_EVENT )
+  	{
+#if (GAS_SENSOR == TRUE)
+    HalGasSensorUpdate();
+#endif 
+    return events ^ HAL_GAS_SENSOR_READ_EVENT;
+
+  	}
 
   if (events & HAL_KEY_EVENT)
   {

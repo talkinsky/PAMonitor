@@ -56,6 +56,12 @@
 #include "hal_sensor.h"
 #include "osal.h"
 #include "hal_board.h"
+#include "hal_adc.h"
+
+#include <string.h>
+
+
+
 
 /***************************************************************************************************
  *                                              TYPEDEFS
@@ -69,6 +75,7 @@
  *                                           GLOBAL VARIABLES
  ***************************************************************************************************/
 static uint8 g_Sensor_Status = SENSOR_STATUS_OFF;
+static GASSenorValueMonitorCBs_t *p_Gas_Sensor_Monitor_AppCBs = NULL;
 
 
 /***************************************************************************************************
@@ -97,13 +104,18 @@ void HalSensorInit (void)
   POWER_5V_DDR |= POWER_5V_BV;
   POWER_24V_DDR |= POWER_24V_BV;
   HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_OFF);  // Initialize all LEDs to OFF.
-
+  P0SEL |= 0x01;
+  
+  P0DIR &= ~0x01;
+  APCFG = 0x01;
+	HalAdcInit( );
 }
 
 
 void HalSensorEnable( uint8 enable )
 {
-	HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_ON);  // Initialize all LEDs to OFF.
+	HalSensorOnOff(HAL_SENSOR_POWER_ALL, HAL_SENSOR_POWER_ON);  // Initialize all sensor power on
+	osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, 500);   /* Schedule event */
 }
 
 
@@ -166,5 +178,46 @@ uint8 HalSensorCalibration( void )
 	return 0;
 }
 
+
+uint16 global_gas = 0;
+uint8 buf[3];
+
+void HalGasSensorUpdate( void )
+{
+	uint8 next;
+	uint16 res = 0;
+	APCFG = 0x01;
+	g_Sensor_Status = SENSOR_STATUS_RUNING;
+	res = HalAdcRead(HAL_ADC_CHANNEL_0,HAL_ADC_RESOLUTION_12);
+	global_gas = res;
+	res = (res*33) >> 11;
+     res = res*3;
+     buf[0] = res/10 + '0';
+     buf[1] = '.';
+     buf[2] =res%10 + '0';
+	 if ( p_Gas_Sensor_Monitor_AppCBs && p_Gas_Sensor_Monitor_AppCBs->pfnGASSensorValueMonitor )
+	   {
+		 p_Gas_Sensor_Monitor_AppCBs->pfnGASSensorValueMonitor( global_gas );  
+	   }
+	 
+
+	osal_start_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT, 500);
+}
+
+
+
+bStatus_t HalGasSensorRegisterCallback(GASSenorValueMonitorCBs_t *appCallbacks )
+
+{
+  if ( appCallbacks )
+  {
+    p_Gas_Sensor_Monitor_AppCBs = appCallbacks;
+    return ( SUCCESS );
+  }
+  else
+  {
+    return ( bleAlreadyInRequestedMode );
+  }
+}
 
 

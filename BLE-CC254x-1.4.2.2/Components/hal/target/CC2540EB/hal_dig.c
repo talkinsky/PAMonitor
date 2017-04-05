@@ -148,18 +148,17 @@ uint8 HalDigFlash( uint8 enable )
  * @return  None
  ***************************************************************************************************/
 
-void HalDigShow( uint8 *data, uint8 len)
+void HalDigShow( uint16 show_value)
 {
-	uint8 buf = *data;
-	uint8 ret;
-	HalCH452Write(CH452_DIG7 | 1);
-	HalCH452Write(CH452_DIG6 | 2);
-	HalCH452Write(CH452_DIG5 | 3);
-	HalCH452Write(CH452_DIG4 | 4);
-	HalCH452Write(CH452_DIG3 | 5);
-	HalCH452Write(CH452_DIG2 | 6);
-	HalCH452Write(CH452_DIG1 | 7);
-	HalCH452Write(CH452_DIG0 | 8);  // ????8
+	uint8 bit1 = show_value/1000;
+	uint8 bit2 = (show_value%1000)/100;
+	uint8 bit3 = (show_value%100)/10;
+	uint8 bit4 = show_value%10;
+
+	HalCH452Write(CH452_DIG3 | bit4);
+	HalCH452Write(CH452_DIG2 | bit3);
+	HalCH452Write(CH452_DIG1 | bit2);
+	HalCH452Write(CH452_DIG0 | bit1);  // ????8
 }
 
 
@@ -209,4 +208,26 @@ uint8 HalDigGetState ( void )
 }
 
 
+
+/***************************************************************************************************
+* @fn	   HalDigShowAlarm
+*
+* @brief   start alarm show
+*
+* @param   enable: start or stop alarm show
+*		   
+* @return  none
+***************************************************************************************************/
+
+uint8 HalDigShowAlarm ( uint8 enable )
+{
+	if(enable)
+	{
+		HalCH452Write(CH452_TWINKLE | 0xFF);
+	}
+	else
+	{
+		HalCH452Write(CH452_TWINKLE);
+	}
+}
 
