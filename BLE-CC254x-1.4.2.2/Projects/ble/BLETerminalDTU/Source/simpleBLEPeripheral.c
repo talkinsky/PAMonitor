@@ -60,6 +60,7 @@
 #include "hal_key.h"
 #include "hal_sensor.h"
 #include "hal_dig.h"
+#include "hal_beep.h"
 
 #include "gatt.h"
 
@@ -72,9 +73,9 @@
 
 #include "pamonitor.h"
 
-#if defined( CC2540_MINIDK )
-  #include "simplekeys.h"
-#endif
+
+#include "simplekeys.h"
+
 
 #include "peripheral.h"
 
@@ -130,6 +131,10 @@
 
 // Length of bd addr as a string
 #define B_ADDR_STR_LEN                        15
+
+
+#define 	WORK_DISABLE					0
+#define 	WORK_ENABLE						1
 
 /*********************************************************************
  * TYPEDEFS
@@ -230,11 +235,11 @@ static void peripheralStateNotificationCB( gaprole_States_t newState );
 static void PAMonitorProfileChangeCB( uint8 paramID );
 static void GASSensorValueMonitorCB( uint16 paramID );
 
+static void PAMonitorWorkEnable(uint8 enable);
+static void PAMonitorAlarmEnable(uint8 enable);
 
 
-#if defined( CC2540_MINIDK )
 static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys );
-#endif
 
 
 /*********************************************************************
@@ -352,7 +357,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   // Setup the GAP Peripheral Role Profile
   {
   	//device starts advertising upon initialization
-  	uint8 initial_advertising_enable = TRUE;
+  	uint8 initial_advertising_enable = FALSE;
 
     // By setting this to zero, the device will go into the waiting state after
     // being discoverable for 30.72 second, and will not being advertising again
@@ -435,20 +440,17 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
 
 	// makes sure LEDs are off
- //HalLedInit();
- HalLedSet( (HAL_LED_POWER ), HAL_LED_MODE_OFF );
- HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON );
-
-
+ 	HalLedInit();
+    HalBeepInit();
 	gasParamInit();
-
 	HalSensorInit();
-	HalSensorEnable(HAL_SENSOR_POWER_ON);
 	HalGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
-
 	HalDigInit();
-	HalDigShow(0);
+	PAMonitorWorkEnable(WORK_DISABLE);
 
+	//add button
+  	//SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
+  	RegisterForKeys( simpleBLEPeripheral_TaskID );
 
 
 
@@ -563,12 +565,10 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 {
   switch ( pMsg->event )
   {     
-  #if defined( CC2540_MINIDK )
     case KEY_CHANGE:
       simpleBLEPeripheral_HandleKeys( ((keyChange_t *)pMsg)->state, 
                                       ((keyChange_t *)pMsg)->keys );
       break;
-  #endif // #if defined( CC2540_MINIDK )
  
     case GATT_MSG_EVENT:
       // Process GATT message
@@ -581,7 +581,6 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
   }
 }
 
-#if defined( CC2540_MINIDK )
 /*********************************************************************
  * @fn      simpleBLEPeripheral_HandleKeys
  *
@@ -607,44 +606,18 @@ static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys )
 
   if ( keys & HAL_KEY_SW_2 )
   {
-
-    SK_Keys |= SK_KEY_RIGHT;
-
-    // if device is not in a connection, pressing the right key should toggle
-    // advertising on and off
-    // Note:  If PLUS_BROADCASTER is define this condition is ignored and
-    //        Device may advertise during connections as well. 
-#ifndef PLUS_BROADCASTER  
-    if( gapProfileState != GAPROLE_CONNECTED )
-    {
-#endif // PLUS_BROADCASTER
-      uint8 current_adv_enabled_status;
-      uint8 new_adv_enabled_status;
-
-      //Find the current GAP advertisement status
-      GAPRole_GetParameter( GAPROLE_ADVERT_ENABLED, &current_adv_enabled_status );
-
-      if( current_adv_enabled_status == FALSE )
-      {
-        new_adv_enabled_status = TRUE;
-      }
-      else
-      {
-        new_adv_enabled_status = FALSE;
-      }
-
-      //change the GAP advertisement status to opposite of current status
-      GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &new_adv_enabled_status );
-#ifndef PLUS_BROADCASTER
-    }
-#endif // PLUS_BROADCASTER
+  	SK_Keys |= SK_KEY_RIGHT;
   }
 
-  // Set the value of the keys state to the Simple Keys Profile;
-  // This will send out a notification of the keys state if enabled
-  SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
+  if( 0x00 == keys)
+  {
+  	PAMonitorWorkEnable(WORK_ENABLE);
+  }
+  else
+  {
+  	PAMonitorWorkEnable(WORK_DISABLE);
+  }
 }
-#endif // #if defined( CC2540_MINIDK )
 
 /*********************************************************************
  * @fn      simpleBLEPeripheral_ProcessGATTMsg
@@ -850,6 +823,49 @@ static void PAMonitorProfileChangeCB( uint8 paramID )
 	}
 
 }
+
+
+
+void PAMonitorWorkEnable(uint8 enable)
+{
+	uint8 initial_advertising_enable = FALSE;
+	if(enable) //PAMonitor start work
+	{
+		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
+		HalSensorEnable(HAL_SENSOR_POWER_ON);
+		HalDigExitSleep();
+		initial_advertising_enable = TRUE;
+	    // Set the GAP Role Parameters
+	    GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
+	}
+	else
+	{
+		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
+		HalSensorEnable(HAL_SENSOR_POWER_OFF);
+		HalDigEnterSleep();
+		GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
+	}
+}
+
+
+void PAMonitorAlarmEnable(uint8 enable)
+{
+	if(enable) //PAMonitor start work
+	{
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON);
+		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_ON);
+		HalDigShowAlarm(1);
+	}
+	else
+	{
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_OFF);
+		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
+		HalDigShowAlarm(0);
+	}
+}
+
 
 
 static void GASSensorValueMonitorCB( uint16 paramID )

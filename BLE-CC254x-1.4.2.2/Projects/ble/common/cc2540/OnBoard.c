@@ -122,14 +122,14 @@ void InitBoard( uint8 level )
     // Interrupts off
     osal_int_disable( INTS_ALL );
     // Turn all LEDs off
-    HalLedSet( HAL_LED_ALL, HAL_LED_MODE_OFF );
+    //HalLedSet( HAL_LED_ALL, HAL_LED_MODE_OFF );
     // Check for Brown-Out reset
 //    ChkReset();
   }
   else  // !OB_COLD
   {
     /* Initialize Key stuff */
-    OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
+    OnboardKeyIntEnable = HAL_KEY_INTERRUPT_DISABLE; //HAL_KEY_INTERRUPT_ENABLE;
     HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
   }
 }
@@ -289,7 +289,7 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
     {
     }
   }
-
+#if 0
   /* If any key is currently pressed down and interrupt
      is still enabled, disable interrupt and switch to polling */
   if( keys != 0 )
@@ -310,6 +310,9 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
       HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
     }
   }
+  #endif
+  OnboardKeyIntEnable = HAL_KEY_INTERRUPT_DISABLE;
+  HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
 }
 
 /*********************************************************************
