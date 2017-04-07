@@ -123,6 +123,22 @@ static void  UDelay(uint16 microSecs)
     asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
     asm("nop"); asm("nop");  
 
+	 asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop");  
+
+	 asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");  
+    asm("nop"); asm("nop");  
+
 
   }  
 }  
