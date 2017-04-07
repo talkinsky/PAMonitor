@@ -1,8 +1,8 @@
 /******************************************************************************
 
- @file  hal_drivers.h
+ @file  hal_beep.h
 
- @brief This file contains the interface to the Drivers service.
+ @brief This file contains the interface to the BEEP Service.
 
  Group: WCS, BTS
  Target Device: CC2540, CC2541
@@ -44,72 +44,89 @@
  Release Name: ble_sdk_1.4.2.2
  Release Date: 2016-06-09 06:57:09
  *****************************************************************************/
-#ifndef HAL_DRIVER_H
-#define HAL_DRIVER_H
+
+#ifndef HAL_BEEP_H
+#define HAL_BEEP_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-/**************************************************************************************************
+/*********************************************************************
  * INCLUDES
- **************************************************************************************************/
+ */
+#include "hal_board.h"
 
-#include "hal_types.h"
+/*********************************************************************
+ * MACROS
+ */
 
-/**************************************************************************************************
+/*********************************************************************
  * CONSTANTS
- **************************************************************************************************/
-#define HAL_GAS_SENSOR_READ_EVENT				0x0100
+ */
 
-#define HAL_BEEP_BLINK_EVENT				0x0100
-#define HAL_BUZZER_EVENT                    0x0080
-#define PERIOD_RSSI_RESET_EVT               0x0040
-#define HAL_LED_BLINK_EVENT                 0x0020
-#define HAL_KEY_EVENT                       0x0010
+/* BEEPS - The BEEP number is the same as the bit position */
+#define HAL_BEEP_1     0x01
+#define HAL_BEEP_ALL   (HAL_BEEP_1)
 
-#if defined POWER_SAVING
-#define HAL_SLEEP_TIMER_EVENT               0x0004
-#define HAL_PWRMGR_HOLD_EVENT               0x0002
-#define HAL_PWRMGR_CONSERVE_EVENT           0x0001
-#endif
+/* Modes */
+#define HAL_BEEP_MODE_OFF     0x00
+#define HAL_BEEP_MODE_ON      0x01
+#define HAL_BEEP_MODE_BLINK   0x02
+#define HAL_BEEP_MODE_FLASH   0x04
+#define HAL_BEEP_MODE_TOGGLE  0x08
 
-#define HAL_PWRMGR_CONSERVE_DELAY           10
-#define PERIOD_RSSI_RESET_TIMEOUT           10
+/* Defaults */
+#define HAL_BEEP_DEFAULT_MAX_BEEPS      1
+#define HAL_BEEP_DEFAULT_DUTY_CYCLE    5
+#define HAL_BEEP_DEFAULT_FLASH_COUNT   50
+#define HAL_BEEP_DEFAULT_FLASH_TIME    1000
 
-/**************************************************************************************************
+/*********************************************************************
+ * TYPEDEFS
+ */
+
+
+/*********************************************************************
  * GLOBAL VARIABLES
- **************************************************************************************************/
-
-extern uint8 Hal_TaskID;
-
-/**************************************************************************************************
- * FUNCTIONS - API
- **************************************************************************************************/
-
-extern void Hal_Init ( uint8 task_id );
+ */
 
 /*
- * Process Serial Buffer
+ * Initialize BEEP Service.
  */
-extern uint16 Hal_ProcessEvent ( uint8 task_id, uint16 events );
+extern void HalBeepInit( void );
 
 /*
- * Process Polls
+ * Set the BEEP ON/OFF/TOGGLE.
  */
-extern void Hal_ProcessPoll (void);
+extern uint8 HalBeepSet( uint8 beep, uint8 mode );
 
 /*
- * Initialize HW
+ * Blink the BEEP.
  */
-extern void HalDriverInit (void);
+extern void HalBeepBlink( uint8 beeps, uint8 cnt, uint8 duty, uint16 time );
+
+/*
+ * Put BEEPs in sleep state - store current values
+ */
+extern void HalBeepEnterSleep( void );
+
+/*
+ * Retore BEEPs from sleep state
+ */
+extern void HalBeepExitSleep( void );
+
+/*
+ * Return BEEP state
+ */
+extern uint8 HalBeepGetState ( void );
+
+/*********************************************************************
+*********************************************************************/
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-/**************************************************************************************************
-**************************************************************************************************/
