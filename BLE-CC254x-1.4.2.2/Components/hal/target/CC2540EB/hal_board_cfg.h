@@ -123,6 +123,37 @@ extern "C"
 #define ALARM_LED_POLARITY                LED2_POLARITY 
 
 
+
+/* LED's */
+#define HAL_TURN_OFF_LED1()       st( LED1_SBIT = LED1_POLARITY (0); )
+#define HAL_TURN_OFF_LED2()       st( LED2_SBIT = LED2_POLARITY (0); )
+
+#define HAL_TURN_ON_LED1()        st( LED1_SBIT = LED1_POLARITY (1); )
+#define HAL_TURN_ON_LED2()        st( LED2_SBIT = LED2_POLARITY (1); )
+
+#define HAL_TOGGLE_LED1()         st( if (LED1_SBIT) { LED1_SBIT = 0; } else { LED1_SBIT = 1;} )
+#define HAL_TOGGLE_LED2()         st( if (LED2_SBIT) { LED2_SBIT = 0; } else { LED2_SBIT = 1;} )
+
+#define HAL_STATE_LED1()          (LED1_POLARITY (LED1_SBIT))
+#define HAL_STATE_LED2()          (LED2_POLARITY (LED2_SBIT))
+
+
+/////////////////////////   Pin define for Beep Alarm control   ////////////////////////////////
+
+#define BEEP_ALARM_BV                      BV(5)
+#define BEEP_ALARM_SBIT                    P1_5
+#define BEEP_ALARM_DDR                     P1DIR
+#define BEEP_ALARM_POLARITY                ACTIVE_HIGH
+
+
+/* BEEP's */
+#define HAL_TURN_OFF_BEEP()       st( BEEP_ALARM_SBIT = BEEP_ALARM_POLARITY (0); )
+#define HAL_TURN_ON_BEEP()        st( BEEP_ALARM_SBIT = BEEP_ALARM_POLARITY (1); )
+#define HAL_TOGGLE_BEEP()         st( if (BEEP_ALARM_SBIT) { BEEP_ALARM_SBIT = 0; } else { BEEP_ALARM_SBIT = 1;} )
+#define HAL_STATE_BEEP()          (BEEP_ALARM_POLARITY (BEEP_ALARM_SBIT))
+#define HAL_SET_OUTPUT_BEEP()	  st(  BEEP_ALARM_DDR |= BEEP_ALARM_BV;)
+
+
 //////////////////////   Pin define for Gas Sensor    //////////////////////////
 
 #define POWER_5V_BV                      BV(2)
@@ -168,14 +199,6 @@ extern "C"
 #define HAL_SET_DIG_INT_HIGH()        st( DISP_INT_SBIT = DISP_INT_POLARITY (1); )
 #define HAL_SET_DIG_RST_HIGH()        st( DISP_RST_SBIT = DISP_RST_POLARITY (1); )
 #define HAL_SET_DIG_RSTI_HIGH()        st( DISP_RSTI_SBIT = DISP_RSTI_POLARITY (1); )
-
-
-/////////////////////////   Pin define for Beep Alarm control   ////////////////////////////////
-
-#define BEEP_ALARM_BV                      BV(5)
-#define BEEP_ALARM_SBIT                    P1_5
-#define BEEP_ALARM_DDR                     P1DIR
-#define BEEP_ALARM_POLARITY                ACTIVE_HIGH
 
 
 //////////////////////Pin define end /////////////////////////////////////////
@@ -328,22 +351,6 @@ It is meant to be used by TI only */
 #define HAL_PUSH_BUTTON4()        (0)
 #define HAL_PUSH_BUTTON5()        (0)
 #define HAL_PUSH_BUTTON6()        (0)
-
-/* LED's */
-#define HAL_TURN_OFF_LED1()       st( LED1_SBIT = LED1_POLARITY (0); )
-#define HAL_TURN_OFF_LED2()       st( LED2_SBIT = LED2_POLARITY (0); )
-
-#define HAL_TURN_ON_LED1()        st( LED1_SBIT = LED1_POLARITY (1); )
-#define HAL_TURN_ON_LED2()        st( LED2_SBIT = LED2_POLARITY (1); )
-
-#define HAL_TOGGLE_LED1()         st( if (LED1_SBIT) { LED1_SBIT = 0; } else { LED1_SBIT = 1;} )
-#define HAL_TOGGLE_LED2()         st( if (LED2_SBIT) { LED2_SBIT = 0; } else { LED2_SBIT = 1;} )
-
-#define HAL_STATE_LED1()          (LED1_POLARITY (LED1_SBIT))
-#define HAL_STATE_LED2()          (LED2_POLARITY (LED2_SBIT))
-
-
-
 
 /* XNV */
 
