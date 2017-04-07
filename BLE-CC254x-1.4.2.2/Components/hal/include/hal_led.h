@@ -86,6 +86,10 @@ extern "C"
 #define HAL_LED_DEFAULT_FLASH_COUNT   50
 #define HAL_LED_DEFAULT_FLASH_TIME    1000
 
+
+#define HAL_LED_INV_MODE_ON	HAL_LED_MODE_OFF
+#define HAL_LED_INV_MODE_OFF	HAL_LED_MODE_ON
+
 /*********************************************************************
  * TYPEDEFS
  */
