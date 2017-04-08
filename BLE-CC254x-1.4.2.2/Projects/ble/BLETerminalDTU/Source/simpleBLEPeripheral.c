@@ -832,6 +832,7 @@ void PAMonitorWorkEnable(uint8 enable)
 	if(enable) //PAMonitor start work
 	{
 		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
+		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
 		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
 		HalSensorEnable(HAL_SENSOR_POWER_ON);
 		HalDigExitSleep();
@@ -843,6 +844,7 @@ void PAMonitorWorkEnable(uint8 enable)
 	{
 		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
 		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
+        HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
 		HalSensorEnable(HAL_SENSOR_POWER_OFF);
 		HalDigEnterSleep();
 		GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
@@ -877,11 +879,11 @@ static void GASSensorValueMonitorCB( uint16 paramID )
 	HalDigShow(paramID);
 	if(paramID > 1000)
 	{
-		HalDigShowAlarm(1);
+		PAMonitorAlarmEnable(1);
 	}
 	else
 	{
-		HalDigShowAlarm(0);
+		PAMonitorAlarmEnable(0);
 	}
 	return;
 }

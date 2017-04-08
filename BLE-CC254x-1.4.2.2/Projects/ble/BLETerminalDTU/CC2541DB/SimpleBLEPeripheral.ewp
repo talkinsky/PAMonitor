@@ -305,6 +305,9 @@
           <state>BLINK_LEDS</state>
           <state>GAS_SENSOR</state>
           <state>HAL_ADC=TRUE</state>
+          <state>HAL_BEEP=TRUE</state>
+          <state>BLINK_BEEPS</state>
+          <state>HAL_KEY=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -6849,6 +6852,12 @@
       <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEPeripheral.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Source\params.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Source\params.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.c</name>
     </file>
     <file>
@@ -6930,6 +6939,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_beep.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_ch452.c</name>
           </file>
           <file>
@@ -6979,6 +6991,9 @@
           <name>Includes</name>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\include\hal_beep.h</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_ccm.h</name>

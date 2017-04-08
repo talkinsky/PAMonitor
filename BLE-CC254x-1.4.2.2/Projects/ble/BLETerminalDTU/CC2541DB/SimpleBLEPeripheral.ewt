@@ -5822,6 +5822,12 @@
       <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEPeripheral.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Source\params.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Source\params.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.c</name>
     </file>
     <file>
@@ -5903,6 +5909,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_beep.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_ch452.c</name>
           </file>
           <file>
@@ -5952,6 +5961,9 @@
           <name>Includes</name>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\include\hal_beep.h</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_ccm.h</name>
