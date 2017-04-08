@@ -856,13 +856,13 @@ void PAMonitorAlarmEnable(uint8 enable)
 {
 	if(enable) //PAMonitor start work
 	{
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_ON);
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_ON);
 		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_ON);
 		HalDigShowAlarm(1);
 	}
 	else
 	{
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_MODE_OFF);
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF);
 		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
 		HalDigShowAlarm(0);
 	}
