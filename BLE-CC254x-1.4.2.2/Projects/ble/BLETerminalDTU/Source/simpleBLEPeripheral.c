@@ -877,7 +877,7 @@ static void GASSensorValueMonitorCB( uint16 paramID )
 		paramID = 9999;
 	}
 	HalDigShow(paramID);
-	if(paramID > 1000)
+	if(paramID > 500)
 	{
 		PAMonitorAlarmEnable(1);
 	}
