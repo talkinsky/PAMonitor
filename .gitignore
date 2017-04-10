@@ -59,3 +59,5 @@ Temporary Items
 *.xcl
 *.cspy.bat
 BLE-CC254x-1.4.2.2/Projects/ble/BLETerminalDTU/CC2541DB/CC2541DK-MINI Keyfob/Obj/SimpleBLEPeripheral.pbd
+*.pbd
+BLE-CC254x-1.4.2.2/Projects/ble/BLEStationDTU/CC2541/settings/SimpleBLECentral.wspos
