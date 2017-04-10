@@ -287,15 +287,17 @@ static GASSenorValueMonitorCBs_t GAS_Sensor_Value_MonitorCBSs=
 
 
 #ifdef LSQ_ADD
-static void SimpleBLE_Updata_Adverting_Data(uint8 type, uint8 *value)
+static void SimpleBLE_Updata_Adverting_Data(uint8 gas_type, uint8 alarm, uint16 value)
 {
 	uint8 advertEnabled = FALSE; // Turn on Advertising
     // Disable connectable advertising.
     GAPRole_SetParameter(GAPROLE_ADVERT_ENABLED, sizeof(uint8),
                          &advertEnabled);
-	
-	advertData[16] = (type << 4) | 0x01;
-	osal_memcpy(&advertData[17],value,3);
+	advertData[16] = 0x00;
+	advertData[16] = (gas_type << 4) | 0x08;  //gas type and data valid
+	advertData[16] = advertData[16] | ((1 == alarm)? 0x04:0x00);
+	advertData[17] = 0x00;       //data[17] reserve for future use
+	osal_memcpy(&advertData[18],&value,2);
 	GAPRole_SetParameter( GAPROLE_ADVERT_DATA, sizeof( advertData ), advertData );
    
     // Set to true for non-connectabel advertising.
@@ -880,11 +882,15 @@ static void GASSensorValueMonitorCB( uint16 paramID )
 	if(paramID > 500)
 	{
 		PAMonitorAlarmEnable(1);
+		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 1, paramID);
 	}
 	else
 	{
 		PAMonitorAlarmEnable(0);
+		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, paramID);
 	}
+
+	
 	return;
 }
 
