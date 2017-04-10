@@ -872,7 +872,7 @@ static void PAStation_Process_Gas_Read_Event( gattMsgEvent_t *pMsg )
 	{
 		PAStationChar_Hdl[BLE_PAMONITOR_CHAR_4] = BUILD_UINT16(pMsg->msg.readByTypeRsp.pDataList[0],
 																pMsg->msg.readByTypeRsp.pDataList[1]);
-		PAStation_SetDevice_Gas(&(pMsg->msg.readByTypeRsp.pDataList[2]),PAMONITORPROFILE_CHAR4_LEN);
+		PAStation_SetDevice_Gas(&(pMsg->msg.readByTypeRsp.pDataList[2]),1);   // useless    PAMONITORPROFILE_CHAR4_LEN);
 		LSQ_PrintString("Read Gas Success , try read Time Value \n\r");
 		
 	}

@@ -81,9 +81,11 @@ void PAStation_SetDevice_Gas(uint8 *buf,uint8 len)
 {
 	//osal_memcpy(g_device_gas,buf,len);
 	uint8 gas_type  = (buf[0] >> 4) & 0x0F ;
+	uint8 gas_poss  = buf[0] & 0x08;
+	uint8 gas_alarm = buf[0] & 0x04;
 	g_gas_result.p_gas_value.gas_type = gas_type;
-	g_gas_result.p_gas_value.possible = (buf[0] & 0x0F)? 0x01:0x00;
-	g_gas_result.p_gas_value.alarm = 0;
+	g_gas_result.p_gas_value.possible = gas_poss;
+	g_gas_result.p_gas_value.alarm = gas_alarm;
 	
 	osal_memcpy((g_gas_result.p_gas_value.value),&buf[1],len-2);
 	g_gas_result.battery = buf[len - 1];
