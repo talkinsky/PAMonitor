@@ -89,6 +89,9 @@
 #endif
 
 #include "params.h"
+#include "npi.h"
+
+#include "crc.h"
 /*********************************************************************
  * MACROS
  */
@@ -151,6 +154,7 @@
 /*********************************************************************
  * EXTERNAL FUNCTIONS
  */
+static void NpiSerialCallback( uint8 port, uint8 events );
 
 /*********************************************************************
  * LOCAL VARIABLES
@@ -341,6 +345,7 @@ static void SimpleBLE_Updata_Adverting_Battery_Data(uint8 type, uint8 value)
  *
  * @return  none
  */
+static unsigned short CRC_res;
 void SimpleBLEPeripheral_Init( uint8 task_id )
 {
 
@@ -442,18 +447,9 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
 
 	// makes sure LEDs are off
- 	HalLedInit();
-    HalBeepInit();
-	gasParamInit();
-	HalSensorInit();
-	HalGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
-	HalDigInit();
+	HalEXGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
 	PAMonitorWorkEnable(WORK_ENABLE);
-
-	//add button
-  	//SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
-  	RegisterForKeys( simpleBLEPeripheral_TaskID );
-
+  	NPI_InitTransport(NpiSerialCallback);
 
 
   // Register callback with SimpleGATTprofile
@@ -472,6 +468,16 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   HCI_EXT_MapPmIoPortCmd( HCI_EXT_PM_IO_PORT_P0, HCI_EXT_PM_IO_PORT_PIN7 );
 
 #endif // defined ( DC_DC_P0_7 )
+
+
+char buf[10];
+	buf[0] = 0x01;
+	buf[1] = 0x03;
+	buf[2] = 0x1B;
+	buf[3] = 0x58;
+	buf[4] = 0x00;
+	buf[5] = 0x10;
+	CRC_res = crc_ccitt(&buf[0],6);
 
   // Setup a delayed profile startup
   osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
@@ -611,14 +617,6 @@ static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys )
   	SK_Keys |= SK_KEY_RIGHT;
   }
 
-  if( 0x00 == keys)
-  {
-  	PAMonitorWorkEnable(WORK_ENABLE);
-  }
-  else
-  {
-  	PAMonitorWorkEnable(WORK_DISABLE);
-  }
 }
 
 /*********************************************************************
@@ -833,42 +831,17 @@ void PAMonitorWorkEnable(uint8 enable)
 	uint8 initial_advertising_enable = FALSE;
 	if(enable) //PAMonitor start work
 	{
-		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
-		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
-		HalSensorEnable(HAL_SENSOR_POWER_ON);
-		HalDigExitSleep();
 		initial_advertising_enable = TRUE;
 	    // Set the GAP Role Parameters
 	    GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
 	}
 	else
 	{
-		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
-        HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		HalSensorEnable(HAL_SENSOR_POWER_OFF);
-		HalDigEnterSleep();
 		GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
 	}
 }
 
 
-void PAMonitorAlarmEnable(uint8 enable)
-{
-	if(enable) //PAMonitor start work
-	{
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_ON);
-		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_ON);
-		HalDigShowAlarm(1);
-	}
-	else
-	{
-		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF);
-		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		HalDigShowAlarm(0);
-	}
-}
 
 
 
@@ -881,17 +854,53 @@ static void GASSensorValueMonitorCB( uint16 paramID )
 	HalDigShow(paramID);
 	if(paramID > 500)
 	{
-		PAMonitorAlarmEnable(1);
 		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 1, paramID);
 	}
 	else
 	{
-		PAMonitorAlarmEnable(0);
 		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, paramID);
 	}
 
 	
 	return;
 }
+
+
+
+/*********************************************************************
+*********************************************************************/
+
+static void NpiSerialCallback( uint8 port, uint8 events )  
+{  
+    (void)port;//?? (void),?????????,???????????????  
+  
+    if (events & (HAL_UART_RX_TIMEOUT | HAL_UART_RX_FULL))   //?????  
+    {  
+        uint8 numBytes = 0;  
+  
+        numBytes = NPI_RxBufLen();           //????????????  
+          
+        if(numBytes == 0)  
+        {  
+            return;  
+        }  
+        else  
+        {  
+            //?????buffer  
+            uint8 *buffer = osal_mem_alloc(numBytes);  
+            if(buffer)  
+            {  
+                //???????????,??????     
+                NPI_ReadTransport(buffer,numBytes);     
+  
+                //???????????-????   
+                NPI_WriteTransport(buffer, numBytes);    
+  
+                //????????  
+                osal_mem_free(buffer);  
+            }  
+        }  
+    }  
+}  
 
 
