@@ -82,6 +82,9 @@ extern "C"
 #define HAL_EXSENSOR_REGISTER_DEVICE_ADDRESS	7022
 
 typedef struct EX_Value_struct{
+	uint8 address;
+	uint8 command;
+	uint8 length;
 	float first_alarm;
 	float second_alarm;
 	float value_range;
@@ -178,6 +181,9 @@ extern uint8 HalEXSensorCalibration( void );
 extern uint8 HalEXSensorGetState ();
 
 extern void HalEXGasSensorUpdate( void );
+
+extern void HalEXGasValueProcess( uint8 *buff, uint8 len );
+
 
 
 /******************************call back function while gas sensor start**********************************/

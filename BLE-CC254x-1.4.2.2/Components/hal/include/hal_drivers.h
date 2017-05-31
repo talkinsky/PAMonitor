@@ -61,7 +61,7 @@ extern "C"
 /**************************************************************************************************
  * CONSTANTS
  **************************************************************************************************/
-#define HAL_GAS_SENSOR_READ_EVENT				0x0100
+#define HAL_GAS_SENSOR_READ_EVENT				0x0200
 
 #define HAL_BEEP_BLINK_EVENT				0x0100
 #define HAL_BUZZER_EVENT                    0x0080

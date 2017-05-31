@@ -70,6 +70,10 @@
 #if defined GAS_SENSOR
 #include "hal_sensor.h"
 #endif
+#if defined EXGAS_SENSOR
+#include "hal_exgas_sensor.h"
+#endif
+
 #ifdef CC2591_COMPRESSION_WORKAROUND
 #include "mac_rx.h"
 #endif
@@ -232,6 +236,10 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
   	{
 #if (GAS_SENSOR == TRUE)
     HalGasSensorUpdate();
+#endif
+
+#if(EXGAS_SENSOR == TRUE)
+	HalEXGasSensorUpdate();
 #endif 
     return events ^ HAL_GAS_SENSOR_READ_EVENT;
 

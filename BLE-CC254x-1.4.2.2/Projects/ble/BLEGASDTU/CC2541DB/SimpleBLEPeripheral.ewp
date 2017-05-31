@@ -303,12 +303,12 @@
           <state>HAL_LED=TRUE</state>
           <state>LSQ_ADD=TRUE</state>
           <state>BLINK_LEDS</state>
-          <state>GAS_SENSOR</state>
           <state>HAL_ADC=TRUE</state>
           <state>HAL_BEEP=TRUE</state>
           <state>BLINK_BEEPS</state>
           <state>HAL_KEY=TRUE</state>
           <state>HAL_UART=TRUE </state>
+          <state>EXGAS_SENSOR=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
