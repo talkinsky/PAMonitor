@@ -200,7 +200,7 @@ static void simpleBLEGATTDiscoveryEvent( gattMsgEvent_t *pMsg );
 static bool simpleBLEFindSvcUuid( uint16 uuid, uint8 *pData, uint8 dataLen );
 static void simpleBLEAddDeviceInfo( uint8 *pAddr, uint8 addrType );
 static void SimpleBLECentral_Start_Discovery_Device();
-static uint8 simpleBLEFindTerminalManufactureData ( uint8 *pData, uint8 dataLen , uint8 *devname, uint8 len);
+static uint8 simpleBLEFindTerminalManufactureData ( uint8 *pData, uint8 dataLen ,  uint8 *factory , uint8 *devname, uint8 len);
 
 char *bdAddr2Str ( uint8 *pAddr );
 static void NpiSerialCallback( uint8 port, uint8 events );
@@ -309,6 +309,7 @@ void SimpleBLECentral_Init( uint8 task_id )
 
 static void SimpleBLECentral_Start_Discovery_Device()
 {
+	//NPI_PrintString("start scaning");
 	osal_set_event(simpleBLETaskId,START_DISCOVERY_DEVICE_EVT);
 }
 /*********************************************************************
@@ -460,6 +461,8 @@ static void simpleBLECentralRssiCB( uint16 connHandle, int8 rssi )
  * @return  TRUE if safe to deallocate event message, FALSE otherwise.
  */
 static uint8 buff_name[15];
+static uint8 factory_id[2];
+
 static uint8 simpleBLECentralEventCB( gapCentralRoleEvent_t *pEvent )
 {
 	switch ( pEvent->gap.opcode )
@@ -476,18 +479,30 @@ static uint8 simpleBLECentralEventCB( gapCentralRoleEvent_t *pEvent )
 		{
 			LSQ_PrintString("Some Device Found\n\r");
 			// if filtering device discovery results based on service UUID
-        //if ( DEFAULT_DEV_DISC_BY_SVC_UUID == TRUE )
-        {
-			if ( simpleBLEFindSvcUuid( PAMONITORPROFILE_SERV_UUID,
-								 pEvent->deviceInfo.pEvtData,
-								 pEvent->deviceInfo.dataLen ) )
+			if(pEvent->deviceInfo.eventType == GAP_ADRPT_ADV_IND )
 			{
-				//simpleBLEAddDeviceInfo( pEvent->deviceInfo.addr, pEvent->deviceInfo.addrType );
-				simpleBLEFindTerminalManufactureData(pEvent->deviceInfo.pEvtData,pEvent->deviceInfo.dataLen,buff_name,0x0A);
-				PAStation_SetDevice_Name(buff_name,5);
-				PAStation_SetDevice_Gas(&buff_name[5],5);
-				PAStation_Report_Device_Value();
-			}
+				
+				//if ( DEFAULT_DEV_DISC_BY_SVC_UUID == TRUE )
+				{
+					if ( simpleBLEFindSvcUuid( PAMONITORPROFILE_SERV_UUID,
+										 pEvent->deviceInfo.pEvtData,
+										 pEvent->deviceInfo.dataLen ) )
+					{
+						//simpleBLEAddDeviceInfo( pEvent->deviceInfo.addr, pEvent->deviceInfo.addrType );
+						
+						simpleBLEFindTerminalManufactureData(pEvent->deviceInfo.pEvtData,pEvent->deviceInfo.dataLen,factory_id,buff_name,0x0A);
+						//NPI_PrintValue("Manu ID: 0x",factory_id[0],16);
+						//NPI_PrintValue("  0x",factory_id[1],16);
+						//NPI_PrintString("\r\n");
+						if(factory_id[0] == 0x0D && factory_id[1] == 0x0D)
+						{
+							PAStation_SetDevice_Name(buff_name,5);
+							PAStation_SetDevice_Gas(&buff_name[5],5);
+							PAStation_Report_Device_Value();
+							osal_memset(factory_id,0x00,2);
+						}
+					}
+				}
 			}
 		}
 		break;
@@ -580,7 +595,7 @@ static void simpleBLECentralStartDiscovery( void )
  * @return  TRUE if service UUID found
  */
 
-static uint8 simpleBLEFindTerminalManufactureData ( uint8 *pData, uint8 dataLen , uint8 *devname, uint8 len)
+static uint8 simpleBLEFindTerminalManufactureData ( uint8 *pData, uint8 dataLen , uint8 *factory, uint8 *devname, uint8 len)
 {
 	uint8 adLen;
 	uint8 adType;
@@ -602,7 +617,9 @@ static uint8 simpleBLEFindTerminalManufactureData ( uint8 *pData, uint8 dataLen 
 		{
 		  pData++;
 		  adLen--;
+		  osal_memcpy(factory,pData,2);
 		  osal_memcpy(devname,pData+=2,len);
+		 
 		  ret = len;
 		}
 		else
