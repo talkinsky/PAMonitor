@@ -160,7 +160,7 @@ static void NpiSerialCallback( uint8 port, uint8 events );
  * LOCAL VARIABLES
  */
 static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
-#define BLE_DEVICE_NAME 0x20,0x01,0x30,0x30,0x37
+#define BLE_DEVICE_NAME 0xA0,0x01,0x30,0x30,0x31   //0x20 means pamonitor and 0xA0 means gas sensor in fix position
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 
@@ -860,9 +860,15 @@ static void AlarmEnable(uint8 enable)
 	}
 }
 
-
+static uint16 last_val = 0;
 static void EXGASSensorValueMonitorCB( uint16 paramID )
 {
+	if(last_val == paramID)
+	{
+		return;
+	}
+	
+	last_val = paramID;
 	if(paramID > 99)
 	{
 		paramID = 99;
