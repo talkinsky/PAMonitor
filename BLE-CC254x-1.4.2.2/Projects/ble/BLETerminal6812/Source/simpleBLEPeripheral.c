@@ -58,10 +58,10 @@
 #include "hal_adc.h"
 #include "hal_led.h"
 #include "hal_key.h"
-#include "hal_exgas_sensor.h"
+#include "hal_sensor.h"
 #include "hal_dig.h"
 #include "hal_beep.h"
-
+#include "hal_uwb.h"
 #include "gatt.h"
 
 #include "hci.h"
@@ -89,9 +89,6 @@
 #endif
 
 #include "params.h"
-#include "npi.h"
-
-#include "crc.h"
 /*********************************************************************
  * MACROS
  */
@@ -154,13 +151,12 @@
 /*********************************************************************
  * EXTERNAL FUNCTIONS
  */
-static void NpiSerialCallback( uint8 port, uint8 events );
 
 /*********************************************************************
  * LOCAL VARIABLES
  */
 static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
-#define BLE_DEVICE_NAME 0xA0,0x01,0x31,0x30,0x31   //0x20 means pamonitor and 0xA0 means gas sensor in fix position
+#define BLE_DEVICE_NAME 0x20,0x01,0x30,0x30,0x37
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 
@@ -237,10 +233,10 @@ static void peripheralStateNotificationCB( gaprole_States_t newState );
 //static void performPeriodicTask( void );
 //static void simpleProfileChangeCB( uint8 paramID );
 static void PAMonitorProfileChangeCB( uint8 paramID );
-static void EXGASSensorValueMonitorCB( uint16 paramID );
+static void GASSensorValueMonitorCB( uint16 paramID );
 
 static void PAMonitorWorkEnable(uint8 enable);
-static void AlarmEnable(uint8 enable);
+static void PAMonitorAlarmEnable(uint8 enable);
 
 
 static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys );
@@ -281,9 +277,9 @@ static PAMonitorProfileCBs_t PAMonitorPeripheral_PAMonitorProfileCBs =
 
 
 
-static EXGASSenorValueMonitorCBs_t EXGAS_Sensor_Value_MonitorCBSs=
+static GASSenorValueMonitorCBs_t GAS_Sensor_Value_MonitorCBSs=
 {
-	EXGASSensorValueMonitorCB    // call back function in monitor gas value
+	GASSensorValueMonitorCB    // call back function in monitor gas value
 };
 /*********************************************************************
  * PUBLIC FUNCTIONS
@@ -425,7 +421,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   #ifdef LSQ_ADD
   PAMonitorProfile_AddService(GATT_ALL_SERVICES);
   #endif
-
 #if defined FEATURE_OAD
   VOID OADTarget_AddService();                    // OAD Profile
 #endif
@@ -445,14 +440,22 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   }
 #endif
 
-	NPI_InitTransport(NpiSerialCallback);
 
-#if defined EXGAS_SENSOR
-	HalEXSensorInit();
-	HalEXGasSensorRegisterCallback(&EXGAS_Sensor_Value_MonitorCBSs);
-#endif
 	// makes sure LEDs are off
+ 	HalLedInit();
+    HalBeepInit();
+	gasParamInit();
+	HalSensorInit();
+	HalUWBInit();
+	HalGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
+	HalDigInit();
 	PAMonitorWorkEnable(WORK_ENABLE);
+
+	//add button
+  	//SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
+  	RegisterForKeys( simpleBLEPeripheral_TaskID );
+
+
 
   // Register callback with SimpleGATTprofile
 //  VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
@@ -609,6 +612,14 @@ static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys )
   	SK_Keys |= SK_KEY_RIGHT;
   }
 
+  if( 0x00 == keys)
+  {
+  	PAMonitorWorkEnable(WORK_ENABLE);
+  }
+  else
+  {
+  	PAMonitorWorkEnable(WORK_DISABLE);
+  }
 }
 
 /*********************************************************************
@@ -823,31 +834,31 @@ void PAMonitorWorkEnable(uint8 enable)
 	uint8 initial_advertising_enable = FALSE;
 	if(enable) //PAMonitor start work
 	{
+		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
+		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
+		HalSensorEnable(HAL_SENSOR_POWER_ON);
+		HalDigExitSleep();
 		initial_advertising_enable = TRUE;
 	    // Set the GAP Role Parameters
-	    //HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
-		//HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		//HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
 	    GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
-		SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, 0);
-		
+		HalDigShow(1234);
+		HalUWBEnable(TRUE);
 	}
 	else
 	{
-		//HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
-		//HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
-        //HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		//HalDigEnterSleep();
-		SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, 0);
+		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
+		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
+        HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
+		HalSensorEnable(HAL_SENSOR_POWER_OFF);
+		HalDigEnterSleep();
 		GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
-		
+		HalUWBEnable(FALSE);
 	}
-	HalEXSensorEnable( initial_advertising_enable );
 }
 
 
-
-static void AlarmEnable(uint8 enable)
+void PAMonitorAlarmEnable(uint8 enable)
 {
 	if(enable) //PAMonitor start work
 	{
@@ -863,73 +874,28 @@ static void AlarmEnable(uint8 enable)
 	}
 }
 
-static uint16 last_val = 0;
-static uint16 no_up_count = 0;
-#define MAX_NO_UP_COUNT 500
-static void EXGASSensorValueMonitorCB( uint16 paramID )
+
+
+static void GASSensorValueMonitorCB( uint16 paramID )
 {
-	if(last_val == paramID)
+	if(paramID > 9999)
 	{
-		if (no_up_count < MAX_NO_UP_COUNT)
-			return;
+		paramID = 9999;
 	}
-	
-	last_val = paramID;
-	if(paramID > 99)
+	HalDigShow(paramID);
+	if(paramID > 500)
 	{
-		paramID = 99;
-	}
-	//HalDigShow(paramID);
-	if(paramID > 25)
-	{
+		PAMonitorAlarmEnable(1);
 		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 1, paramID);
-		 //AlarmEnable(1);
 	}
 	else
 	{
+		PAMonitorAlarmEnable(0);
 		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, paramID);
-		 //AlarmEnable(0);
-	}	
+	}
+
+	
 	return;
 }
-
-
-
-/*********************************************************************
-*********************************************************************/
-
-static void NpiSerialCallback( uint8 port, uint8 events )  
-{  
-    (void)port;//?? (void),?????????,???????????????  
-  
-    if (events & (HAL_UART_RX_TIMEOUT | HAL_UART_RX_FULL))   //?????  
-    {  
-        uint8 numBytes = 0;  
-  
-        numBytes = NPI_RxBufLen();           //????????????  
-          
-        if(numBytes == 0)  
-        {  
-            return;  
-        }  
-        else  
-        {  
-            //?????buffer  
-            uint8 *buffer = osal_mem_alloc(numBytes);  
-            if(buffer)  
-            {  
-                //???????????,??????     
-                NPI_ReadTransport(buffer,numBytes);     
-  
-                //???????????-????   
-                //NPI_WriteTransport(buffer, numBytes);    
-                HalEXGasValueProcess( buffer, numBytes );
-  
-                //????????  
-                osal_mem_free(buffer);  
-            }  
-        }  
-    }  
-}  
 
 

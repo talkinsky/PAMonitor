@@ -479,7 +479,7 @@ static uint8 simpleBLECentralEventCB( gapCentralRoleEvent_t *pEvent )
 		{
 			LSQ_PrintString("Some Device Found\n\r");
 			// if filtering device discovery results based on service UUID
-			if(pEvent->deviceInfo.eventType == GAP_ADRPT_ADV_IND )
+	//		if(pEvent->deviceInfo.eventType == GAP_ADRPT_ADV_IND )
 			{
 				
 				//if ( DEFAULT_DEV_DISC_BY_SVC_UUID == TRUE )

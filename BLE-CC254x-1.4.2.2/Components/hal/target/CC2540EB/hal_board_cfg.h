@@ -200,6 +200,16 @@ extern "C"
 #define HAL_SET_DIG_RST_HIGH()        st( DISP_RST_SBIT = DISP_RST_POLARITY (1); )
 #define HAL_SET_DIG_RSTI_HIGH()        st( DISP_RSTI_SBIT = DISP_RSTI_POLARITY (1); )
 
+//////////////////////Pin define for UWB control//////////////////////////////////////////
+
+#define UWB_CTRL_BV                      BV(5)
+#define UWB_CTRL_SBIT                    P0_5
+#define UWB_CTRL_DDR                     P0DIR
+#define UWB_CTRL_POLARITY                ACTIVE_HIGH
+
+#define HAL_SET_UWB_CTRL_LOW()       st( UWB_CTRL_SBIT = UWB_CTRL_POLARITY (0); )
+#define HAL_SET_UWB_CTRL_HIGH()       st( UWB_CTRL_SBIT = UWB_CTRL_POLARITY (1); )
+
 
 //////////////////////Pin define end /////////////////////////////////////////
 

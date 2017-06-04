@@ -1,15 +1,16 @@
 /******************************************************************************
 
- @file  hal_led.h
+ @file  simpleBLEPeripheral.h
 
- @brief This file contains the interface to the LED Service.
+ @brief This file contains the Simple BLE Peripheral sample application
+        definitions and prototypes.
 
  Group: WCS, BTS
  Target Device: CC2540, CC2541
 
  ******************************************************************************
  
- Copyright (c) 2005-2016, Texas Instruments Incorporated
+ Copyright (c) 2010-2016, Texas Instruments Incorporated
  All rights reserved.
 
  IMPORTANT: Your use of this Software is limited to those specific rights
@@ -42,11 +43,11 @@
 
  ******************************************************************************
  Release Name: ble_sdk_1.4.2.2
- Release Date: 2016-06-09 06:57:09
+ Release Date: 2016-06-09 06:57:10
  *****************************************************************************/
 
-#ifndef HAL_LED_H
-#define HAL_LED_H
+#ifndef SIMPLEBLEPERIPHERAL_H
+#define SIMPLEBLEPERIPHERAL_H
 
 #ifdef __cplusplus
 extern "C"
@@ -56,84 +57,35 @@ extern "C"
 /*********************************************************************
  * INCLUDES
  */
-#include "hal_board.h"
+
+/*********************************************************************
+ * CONSTANTS
+ */
+
+
+// Simple BLE Peripheral Task Events
+#define SBP_START_DEVICE_EVT                              0x0001
+#define SBP_PERIODIC_EVT                                  0x0002
+#define SBP_GAS_SENSOR_CALI_TMP_EVT                       0x0004
+
 
 /*********************************************************************
  * MACROS
  */
 
 /*********************************************************************
- * CONSTANTS
- */
-
-/* LEDS - The LED number is the same as the bit position */
-#define HAL_LED_1     0x01
-#define HAL_LED_2     0x02
-
-#ifdef TGS6810V2
-#define HAL_LED_POWER HAL_LED_2
-#define HAL_LED_ALARM HAL_LED_1
-#else
-#define HAL_LED_POWER HAL_LED_1
-#define HAL_LED_ALARM HAL_LED_2
-#endif
-#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2)
-
-/* Modes */
-#define HAL_LED_MODE_OFF     0x00
-#define HAL_LED_MODE_ON      0x01
-#define HAL_LED_MODE_BLINK   0x02
-#define HAL_LED_MODE_FLASH   0x04
-#define HAL_LED_MODE_TOGGLE  0x08
-
-/* Defaults */
-#define HAL_LED_DEFAULT_MAX_LEDS      4
-#define HAL_LED_DEFAULT_DUTY_CYCLE    5
-#define HAL_LED_DEFAULT_FLASH_COUNT   50
-#define HAL_LED_DEFAULT_FLASH_TIME    1000
-
-
-#define HAL_LED_INV_MODE_ON	HAL_LED_MODE_OFF
-#define HAL_LED_INV_MODE_OFF	HAL_LED_MODE_ON
-
-/*********************************************************************
- * TYPEDEFS
- */
-
-
-/*********************************************************************
- * GLOBAL VARIABLES
+ * FUNCTIONS
  */
 
 /*
- * Initialize LED Service.
+ * Task Initialization for the BLE Application
  */
-extern void HalLedInit( void );
+extern void SimpleBLEPeripheral_Init( uint8 task_id );
 
 /*
- * Set the LED ON/OFF/TOGGLE.
+ * Task Event Processor for the BLE Application
  */
-extern uint8 HalLedSet( uint8 led, uint8 mode );
-
-/*
- * Blink the LED.
- */
-extern void HalLedBlink( uint8 leds, uint8 cnt, uint8 duty, uint16 time );
-
-/*
- * Put LEDs in sleep state - store current values
- */
-extern void HalLedEnterSleep( void );
-
-/*
- * Retore LEDs from sleep state
- */
-extern void HalLedExitSleep( void );
-
-/*
- * Return LED state
- */
-extern uint8 HalLedGetState ( void );
+extern uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events );
 
 /*********************************************************************
 *********************************************************************/
@@ -142,4 +94,4 @@ extern uint8 HalLedGetState ( void );
 }
 #endif
 
-#endif
+#endif /* SIMPLEBLEPERIPHERAL_H */

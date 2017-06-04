@@ -1,8 +1,8 @@
 /******************************************************************************
 
- @file  hal_led.h
+ @file  hal_sensor.h
 
- @brief This file contains the interface to the LED Service.
+ @brief This file contains the interface to the sensor Service.
 
  Group: WCS, BTS
  Target Device: CC2540, CC2541
@@ -45,8 +45,8 @@
  Release Date: 2016-06-09 06:57:09
  *****************************************************************************/
 
-#ifndef HAL_LED_H
-#define HAL_LED_H
+#ifndef HAL_UWB_H
+#define HAL_UWB_H
 
 #ifdef __cplusplus
 extern "C"
@@ -57,6 +57,7 @@ extern "C"
  * INCLUDES
  */
 #include "hal_board.h"
+#include "bcomdef.h"
 
 /*********************************************************************
  * MACROS
@@ -66,35 +67,16 @@ extern "C"
  * CONSTANTS
  */
 
-/* LEDS - The LED number is the same as the bit position */
-#define HAL_LED_1     0x01
-#define HAL_LED_2     0x02
-
-#ifdef TGS6810V2
-#define HAL_LED_POWER HAL_LED_2
-#define HAL_LED_ALARM HAL_LED_1
-#else
-#define HAL_LED_POWER HAL_LED_1
-#define HAL_LED_ALARM HAL_LED_2
-#endif
-#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2)
+/* SENOR'S Power - The sensor number is the same as the bit position */
+#define HAL_UWB_POWER      0x01
+#define HAL_UWB_POWER_ALL   (HAL_UWB_POWER )
 
 /* Modes */
-#define HAL_LED_MODE_OFF     0x00
-#define HAL_LED_MODE_ON      0x01
-#define HAL_LED_MODE_BLINK   0x02
-#define HAL_LED_MODE_FLASH   0x04
-#define HAL_LED_MODE_TOGGLE  0x08
+#define HAL_UWB_POWER_OFF     0x00
+#define HAL_UWB_POWER_ON      0x01
+
 
 /* Defaults */
-#define HAL_LED_DEFAULT_MAX_LEDS      4
-#define HAL_LED_DEFAULT_DUTY_CYCLE    5
-#define HAL_LED_DEFAULT_FLASH_COUNT   50
-#define HAL_LED_DEFAULT_FLASH_TIME    1000
-
-
-#define HAL_LED_INV_MODE_ON	HAL_LED_MODE_OFF
-#define HAL_LED_INV_MODE_OFF	HAL_LED_MODE_ON
 
 /*********************************************************************
  * TYPEDEFS
@@ -106,37 +88,21 @@ extern "C"
  */
 
 /*
- * Initialize LED Service.
+ * Initialize Sensor Service.
  */
-extern void HalLedInit( void );
+extern void HalUWBInit( void );
 
 /*
- * Set the LED ON/OFF/TOGGLE.
+ * Enable/disable Sensor Service.
  */
-extern uint8 HalLedSet( uint8 led, uint8 mode );
+extern void HalUWBEnable( uint8 enable );
+
 
 /*
- * Blink the LED.
+ * Get current sensor status.
  */
-extern void HalLedBlink( uint8 leds, uint8 cnt, uint8 duty, uint16 time );
+extern uint8 HalSensorGetState ();
 
-/*
- * Put LEDs in sleep state - store current values
- */
-extern void HalLedEnterSleep( void );
-
-/*
- * Retore LEDs from sleep state
- */
-extern void HalLedExitSleep( void );
-
-/*
- * Return LED state
- */
-extern uint8 HalLedGetState ( void );
-
-/*********************************************************************
-*********************************************************************/
 
 #ifdef __cplusplus
 }

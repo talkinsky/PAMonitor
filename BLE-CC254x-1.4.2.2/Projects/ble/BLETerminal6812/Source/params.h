@@ -1,15 +1,15 @@
 /******************************************************************************
 
- @file  hal_led.h
+ @file  params.h
 
- @brief This file contains the interface to the LED Service.
+ @brief This file contains the store gas sensor param get and set function.
 
  Group: WCS, BTS
  Target Device: CC2540, CC2541
 
  ******************************************************************************
  
- Copyright (c) 2005-2016, Texas Instruments Incorporated
+ Copyright (c) 2010-2016, Texas Instruments Incorporated
  All rights reserved.
 
  IMPORTANT: Your use of this Software is limited to those specific rights
@@ -42,11 +42,11 @@
 
  ******************************************************************************
  Release Name: ble_sdk_1.4.2.2
- Release Date: 2016-06-09 06:57:09
+ Release Date: 2016-06-09 06:57:10
  *****************************************************************************/
 
-#ifndef HAL_LED_H
-#define HAL_LED_H
+#ifndef GAS_PARAM_H
+#define GAS_PARAM_H
 
 #ifdef __cplusplus
 extern "C"
@@ -56,84 +56,58 @@ extern "C"
 /*********************************************************************
  * INCLUDES
  */
-#include "hal_board.h"
-
-/*********************************************************************
- * MACROS
- */
 
 /*********************************************************************
  * CONSTANTS
  */
-
-/* LEDS - The LED number is the same as the bit position */
-#define HAL_LED_1     0x01
-#define HAL_LED_2     0x02
-
-#ifdef TGS6810V2
-#define HAL_LED_POWER HAL_LED_2
-#define HAL_LED_ALARM HAL_LED_1
-#else
-#define HAL_LED_POWER HAL_LED_1
-#define HAL_LED_ALARM HAL_LED_2
-#endif
-#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2)
-
-/* Modes */
-#define HAL_LED_MODE_OFF     0x00
-#define HAL_LED_MODE_ON      0x01
-#define HAL_LED_MODE_BLINK   0x02
-#define HAL_LED_MODE_FLASH   0x04
-#define HAL_LED_MODE_TOGGLE  0x08
-
-/* Defaults */
-#define HAL_LED_DEFAULT_MAX_LEDS      4
-#define HAL_LED_DEFAULT_DUTY_CYCLE    5
-#define HAL_LED_DEFAULT_FLASH_COUNT   50
-#define HAL_LED_DEFAULT_FLASH_TIME    1000
-
-
-#define HAL_LED_INV_MODE_ON	HAL_LED_MODE_OFF
-#define HAL_LED_INV_MODE_OFF	HAL_LED_MODE_ON
-
-/*********************************************************************
- * TYPEDEFS
- */
+typedef struct s_gas_param
+{
+	uint16	alarm_threshold;
+	uint16	offset_from_zero;
+	uint16 	offset_from_1000;
+}GAS_PARAM_STRUCT;
 
 
 /*********************************************************************
- * GLOBAL VARIABLES
+ * MACROS
+ */
+//SNV Page ID
+#define SNV_GAS_PARAM_STORE_ID                       0x80
+
+
+//default param value
+#define GAS_PARAM_ALARM_THRES				1000
+#define GAS_PARAM_OFFSET_ZERO				200
+#define GAS_PARAM_OFFSET_1000				200
+/*********************************************************************
+ * FUNCTIONS
  */
 
 /*
- * Initialize LED Service.
- */
-extern void HalLedInit( void );
+ * init Gas Param
+*/
+extern void gasParamInit( void );
 
 /*
- * Set the LED ON/OFF/TOGGLE.
+ * set and get alarm threadhold
  */
-extern uint8 HalLedSet( uint8 led, uint8 mode );
+extern void setGasThreashold( uint16 threas );
+extern uint16 getGasThreashold( void );
+
 
 /*
- * Blink the LED.
+ * set and get offset from zero
  */
-extern void HalLedBlink( uint8 leds, uint8 cnt, uint8 duty, uint16 time );
+extern void setGasOffsetFromZero( uint16 threas );
+extern uint16 getGasOffsetFromZero( void );
+
 
 /*
- * Put LEDs in sleep state - store current values
+ * set and get offset from 1000
  */
-extern void HalLedEnterSleep( void );
+extern void setGasOffsetFrom1000( uint16 threas );
+extern uint16 getGasOffsetFrom1000( void );
 
-/*
- * Retore LEDs from sleep state
- */
-extern void HalLedExitSleep( void );
-
-/*
- * Return LED state
- */
-extern uint8 HalLedGetState ( void );
 
 /*********************************************************************
 *********************************************************************/
@@ -142,4 +116,4 @@ extern uint8 HalLedGetState ( void );
 }
 #endif
 
-#endif
+#endif /* GAS_PARAM_H */
