@@ -303,12 +303,11 @@
           <state>HAL_LED=TRUE</state>
           <state>LSQ_ADD=TRUE</state>
           <state>BLINK_LEDS</state>
-          <state>GAS_SENSOR</state>
           <state>HAL_ADC=TRUE</state>
           <state>HAL_BEEP=TRUE</state>
           <state>BLINK_BEEPS</state>
           <state>HAL_KEY=TRUE</state>
-          <state>TGS6810V2=TRUE</state>
+          <state>TGS6812V2=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -6934,6 +6933,9 @@
         <group>
           <name>Drivers</name>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_6812.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_adc.c</name>
           </file>
           <file>
@@ -6961,9 +6963,6 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_i2c.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_i2c.h</name>
-          </file>
-          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_key.c</name>
           </file>
           <file>
@@ -6971,9 +6970,6 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_led.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_sensor.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_sleep.c</name>
@@ -6994,6 +6990,9 @@
         <group>
           <name>Includes</name>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\include\hal_6812.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.h</name>
           </file>
           <file>
@@ -7013,6 +7012,9 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_i2c.h</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_mcu.h</name>

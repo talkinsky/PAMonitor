@@ -70,7 +70,7 @@ extern "C"
 #define HAL_LED_1     0x01
 #define HAL_LED_2     0x02
 
-#ifdef TGS6810V2
+#ifdef TGS6812V2
 #define HAL_LED_POWER HAL_LED_2
 #define HAL_LED_ALARM HAL_LED_1
 #else
