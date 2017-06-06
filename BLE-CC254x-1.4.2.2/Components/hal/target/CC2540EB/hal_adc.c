@@ -105,7 +105,11 @@ static uint8 adcRef;
 void HalAdcInit (void)
 {
 #if (HAL_ADC == TRUE)
+#if (TGS6812V2 == TRUE)
+	 adcRef = HAL_ADC_REF_AIN7;
+#else
   adcRef = HAL_ADC_REF_VOLT;
+#endif
 #endif
 }
 
