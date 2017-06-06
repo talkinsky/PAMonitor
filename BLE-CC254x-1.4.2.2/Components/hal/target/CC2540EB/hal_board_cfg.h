@@ -211,6 +211,19 @@ extern "C"
 #define HAL_SET_UWB_CTRL_HIGH()       st( UWB_CTRL_SBIT = UWB_CTRL_POLARITY (1); )
 
 
+
+//////////////////////Pin define for TGS6812 control //////////////////////////////////////
+#define POWER_6812_BV                      BV(3)
+#define POWER_6812_SBIT                    P0_3
+#define POWER_6812_DDR                     P0DIR
+#define POWER_6812_POLARITY                ACTIVE_HIGH
+
+
+#define HAL_TURN_OFF_POWER_6812()       st( POWER_6812_SBIT = POWER_6812_POLARITY (0); )
+#define HAL_TURN_ON_POWER_6812()        st( POWER_6812_SBIT = POWER_6812_POLARITY (1); )
+
+
+
 //////////////////////Pin define end /////////////////////////////////////////
 
 
