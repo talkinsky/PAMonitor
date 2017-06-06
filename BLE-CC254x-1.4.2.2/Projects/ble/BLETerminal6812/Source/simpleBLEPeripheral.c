@@ -58,7 +58,7 @@
 #include "hal_adc.h"
 #include "hal_led.h"
 #include "hal_key.h"
-#include "hal_sensor.h"
+#include "hal_6812.h"
 #include "hal_dig.h"
 #include "hal_beep.h"
 #include "hal_uwb.h"
@@ -233,7 +233,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState );
 //static void performPeriodicTask( void );
 //static void simpleProfileChangeCB( uint8 paramID );
 static void PAMonitorProfileChangeCB( uint8 paramID );
-static void GASSensorValueMonitorCB( uint16 paramID );
+static void GASSensor6812ValueMonitorCB( uint16 paramID );
 
 static void PAMonitorWorkEnable(uint8 enable);
 static void PAMonitorAlarmEnable(uint8 enable);
@@ -277,9 +277,9 @@ static PAMonitorProfileCBs_t PAMonitorPeripheral_PAMonitorProfileCBs =
 
 
 
-static GASSenorValueMonitorCBs_t GAS_Sensor_Value_MonitorCBSs=
+static GASSenor6812ValueMonitorCBs_t GAS_Sensor6812_Value_MonitorCBSs=
 {
-	GASSensorValueMonitorCB    // call back function in monitor gas value
+	GASSensor6812ValueMonitorCB    // call back function in monitor gas value
 };
 /*********************************************************************
  * PUBLIC FUNCTIONS
@@ -347,7 +347,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 	uint8 temp = 0x0A;
 #ifdef LSQ_ADD
 	HCI_EXT_ExtendRfRangeCmd();
-	HCI_EXT_SetTxPowerCmd(HCI_EXT_TX_POWER_4_DBM);
+	HCI_EXT_SetTxPowerCmd(HCI_EXT_TX_POWER_MINUS_6_DBM);
 	HCI_EXT_SetRxGainCmd(HCI_EXT_RX_GAIN_HIGH);
 	
 #endif
@@ -445,9 +445,11 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
  	HalLedInit();
     HalBeepInit();
 	gasParamInit();
-	HalSensorInit();
 	HalUWBInit();
-	HalGasSensorRegisterCallback(&GAS_Sensor_Value_MonitorCBSs);
+	
+	HalSensor6812Init();
+	HalGasSensor6812RegisterCallback(&GAS_Sensor6812_Value_MonitorCBSs);
+	
 	HalDigInit();
 	PAMonitorWorkEnable(WORK_ENABLE);
 
@@ -837,12 +839,12 @@ void PAMonitorWorkEnable(uint8 enable)
 		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_ON );
 		HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
 		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
-		HalSensorEnable(HAL_SENSOR_POWER_ON);
+		HalSensor6812Enable(HAL_SENSOR6812_POWER_ON);
 		HalDigExitSleep();
+		HalDigShow(0);
 		initial_advertising_enable = TRUE;
 	    // Set the GAP Role Parameters
 	    GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
-		HalDigShow(1234);
 		HalUWBEnable(TRUE);
 	}
 	else
@@ -850,7 +852,8 @@ void PAMonitorWorkEnable(uint8 enable)
 		HalLedSet( (HAL_LED_POWER ), HAL_LED_INV_MODE_OFF );
 		HalLedSet( (HAL_LED_ALARM), HAL_LED_INV_MODE_OFF );
         HalBeepSet( (HAL_BEEP_ALL), HAL_BEEP_MODE_OFF);
-		HalSensorEnable(HAL_SENSOR_POWER_OFF);
+		HalSensor6812Enable(HAL_SENSOR6812_POWER_OFF);
+		HalDigShow(0);
 		HalDigEnterSleep();
 		GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
 		HalUWBEnable(FALSE);
@@ -875,26 +878,35 @@ void PAMonitorAlarmEnable(uint8 enable)
 }
 
 
-
-static void GASSensorValueMonitorCB( uint16 paramID )
+static uint16 res_last = 0;
+static uint16 no_update_count = 0;
+#define MAX_NO_UPDATA_COUNT 200
+static void GASSensor6812ValueMonitorCB( uint16 paramID )
 {
-	if(paramID > 9999)
+	uint16 res;
+	res = (2048 - paramID)/2;
+	if(res > 99)
 	{
-		paramID = 9999;
+		res = 99;
 	}
-	HalDigShow(paramID);
-	if(paramID > 500)
+	if(res == res_last)
+	{
+		if(no_update_count++ < MAX_NO_UPDATA_COUNT)
+			return;
+	}
+	no_update_count = 0;
+	res_last = res;
+	HalDigShow(res * 100);
+	if(res > 25)
 	{
 		PAMonitorAlarmEnable(1);
-		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 1, paramID);
+		SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 1, res);
 	}
 	else
 	{
 		PAMonitorAlarmEnable(0);
-		 SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, paramID);
+		SimpleBLE_Updata_Adverting_Data(GAS_TYPE_CH4, 0, res);
 	}
-
-	
 	return;
 }
 
