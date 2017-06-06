@@ -73,6 +73,9 @@
 #if defined EXGAS_SENSOR
 #include "hal_exgas_sensor.h"
 #endif
+#if defined TGS6812V2
+#include "hal_6812.h"
+#endif
 
 #ifdef CC2591_COMPRESSION_WORKAROUND
 #include "mac_rx.h"
@@ -236,6 +239,10 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
   	{
 #if (GAS_SENSOR == TRUE)
     HalGasSensorUpdate();
+#endif
+
+#if (TGS6812V2 == TRUE)
+	HalGasSensor6812Update();
 #endif
 
 #if(EXGAS_SENSOR == TRUE)
