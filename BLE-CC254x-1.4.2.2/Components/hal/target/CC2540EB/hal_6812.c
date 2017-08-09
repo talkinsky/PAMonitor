@@ -72,7 +72,7 @@
 #define SENSOR6812_STATUS_RUNING		0X02
 
 
-#define GAS_SENSOR6812_INIT_TIME_VALID	500 //120000   //2min
+#define GAS_SENSOR6812_INIT_TIME_VALID	120000   //2min
 #define GAS_SENSOR6812_READ_VALUE_VALID	500      //500ms
 
 
@@ -128,8 +128,9 @@ void HalSensor6812Enable( uint8 enable )
 	else
 	{
 		HalSensor6812OnOff(HAL_SENSOR6812_POWER_ALL, HAL_SENSOR6812_POWER_OFF);  // Initialize all sensor power on
-		osal_stop_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT);   /* Schedule event */
 		g_Sensor6812_Status = SENSOR6812_STATUS_OFF;
+		osal_stop_timerEx(Hal_TaskID, HAL_GAS_SENSOR_READ_EVENT);   /* Schedule event */
+		
 	}
 }
 
@@ -189,6 +190,10 @@ void HalGasSensor6812Update( void )
 	uint8 next;
 	uint16 res = 0;
 	APCFG = 0x01;
+	if(g_Sensor6812_Status == SENSOR6812_STATUS_OFF)
+	{
+		return;
+	}
 	g_Sensor6812_Status = SENSOR6812_STATUS_RUNING;
 	res = HalAdcRead(HAL_ADC_CHANNEL_0,HAL_ADC_RESOLUTION_12);
 	global_gas = res;
