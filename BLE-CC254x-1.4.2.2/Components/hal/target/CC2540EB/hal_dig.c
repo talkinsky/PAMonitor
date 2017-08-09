@@ -174,7 +174,7 @@ void HalDigShow( uint16 show_value)
 
 void HalDigEnterSleep( void )
 {
-	HalCH452Write(CH452_SLEEP);
+	HalCH452Write(CH452_SYSOFF);
 }
 
 /***************************************************************************************************
